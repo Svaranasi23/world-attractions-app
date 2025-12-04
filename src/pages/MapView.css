@@ -1,0 +1,117 @@
+.map-view {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #f0f8f0;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4CAF50;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.park-popup {
+  max-width: 350px;
+  font-family: Arial, sans-serif;
+}
+
+.park-popup h3 {
+  margin: 0 0 10px 0;
+  color: #2d5016;
+  font-size: 18px;
+}
+
+.park-popup p {
+  margin: 5px 0;
+  font-size: 12px;
+}
+
+.park-popup .description {
+  margin: 8px 0;
+  color: #555;
+  line-height: 1.4;
+  font-size: 11px;
+}
+
+.park-popup .nearby-section {
+  margin: 10px 0 5px 0;
+}
+
+.park-popup .nearby-section strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.park-popup .nearby-section ul {
+  margin: 5px 0;
+  padding-left: 20px;
+  font-size: 11px;
+}
+
+.park-popup .coordinates {
+  margin-top: 10px;
+  font-size: 10px;
+  color: #888;
+}
+
+.park-popup a {
+  color: #0066cc;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.park-popup a:hover {
+  text-decoration: underline;
+}
+
+.airport-popup {
+  max-width: 300px;
+  font-family: Arial, sans-serif;
+}
+
+.airport-popup h3 {
+  margin: 0 0 10px 0;
+  color: #0066cc;
+  font-size: 16px;
+}
+
+.airport-popup p {
+  margin: 5px 0;
+  font-size: 12px;
+}
+
+.airport-popup .coordinates {
+  margin-top: 10px;
+  font-size: 10px;
+  color: #888;
+}
+
+.airport-popup .nearby-park-info {
+  margin: 8px 0;
+  padding: 5px;
+  background-color: #e8f5e9;
+  border-radius: 3px;
+  font-size: 11px;
+  color: #2e7d32;
+}
+

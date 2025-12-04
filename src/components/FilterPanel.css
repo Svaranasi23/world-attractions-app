@@ -1,0 +1,165 @@
+.filter-panel {
+  width: 100%;
+  font-size: 12px;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px 0;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #4CAF50;
+}
+
+.filter-header h3 {
+  margin: 0;
+  color: #2d5016;
+  font-size: 16px;
+}
+
+.collapse-icon {
+  font-size: 12px;
+  color: #4CAF50;
+  font-weight: bold;
+  user-select: none;
+}
+
+.collapse-icon-small {
+  font-size: 10px;
+  color: #4CAF50;
+  font-weight: bold;
+  user-select: none;
+  margin-left: auto;
+  padding-left: 10px;
+}
+
+.filter-panel .filter-hint {
+  margin: 5px 0 10px 0;
+  font-size: 11px;
+  color: #666;
+}
+
+.filter-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.filter-item {
+  display: block;
+  margin: 5px 0;
+  cursor: pointer;
+  padding: 3px 0;
+}
+
+.filter-item input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.usa-parent {
+  font-weight: bold;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 5px;
+}
+
+.usa-parent input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.nested-regions {
+  margin-left: 26px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  border-left: 2px solid #4CAF50;
+}
+
+.nested-item {
+  font-size: 11px;
+  padding: 2px 0;
+  margin: 3px 0;
+}
+
+.nested-item span {
+  font-weight: 500;
+}
+
+.usa-filter-group,
+.india-filter-group,
+.nepal-filter-group,
+.sri-lanka-filter-group {
+  margin-bottom: 5px;
+}
+
+.usa-header,
+.india-header,
+.nepal-header,
+.sri-lanka-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.usa-header .usa-parent,
+.india-header .india-parent,
+.nepal-header .nepal-parent,
+.sri-lanka-header .sri-lanka-parent {
+  flex: 1;
+  cursor: default;
+  margin: 0;
+}
+
+.filter-item.canada-item {
+  margin-top: 15px;
+  padding-top: 8px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.filter-item.india-item,
+.filter-item.costa-rica-item {
+  margin-top: 8px;
+  padding-top: 5px;
+}
+
+.filter-note {
+  margin: 10px 0 0 0;
+  font-size: 10px;
+  color: #666;
+  font-style: italic;
+}
+
+.airport-toggle-section {
+  margin: 15px 0;
+  padding: 10px 0;
+  border-top: 2px solid #4CAF50;
+  border-bottom: 2px solid #4CAF50;
+}
+
+.airport-toggle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.airport-toggle input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.filter-hint-small {
+  margin: 5px 0 0 0;
+  font-size: 10px;
+  color: #666;
+  font-style: italic;
+}
+

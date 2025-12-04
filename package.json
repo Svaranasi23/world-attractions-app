@@ -1,0 +1,35 @@
+{
+  "name": "national-parks-app",
+  "version": "1.0.0",
+  "description": "Interactive National Parks Map Application - US and Canadian National Parks with advanced features",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "generate-map": "python3 scripts/map_national_parks.py",
+    "download-data": "python3 scripts/download_national_parks.py && python3 scripts/download_canadian_parks.py && python3 scripts/download_indian_parks.py && python3 scripts/download_india_unesco.py && python3 scripts/download_jyotirlinga_temples.py && python3 scripts/download_shakti_peethas.py && python3 scripts/download_india_other_temples.py && python3 scripts/download_india_mutts.py && python3 scripts/download_divya_desams.py && python3 scripts/download_nepal_parks.py && python3 scripts/download_nepal_temples.py && python3 scripts/download_sri_lanka_parks.py && python3 scripts/download_sri_lanka_temples.py && python3 scripts/download_costa_rica_parks.py && python3 scripts/download_airports.py"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^4.2.1",
+    "leaflet.heat": "^0.2.0",
+    "axios": "^1.6.2",
+    "papaparse": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "vite": "^5.0.8"
+  }
+}
+
