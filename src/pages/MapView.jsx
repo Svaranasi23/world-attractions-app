@@ -185,10 +185,13 @@ function MapView() {
     'India-OtherTemples': true,
     'India-Mutts': true,
     'India-DivyaDesam': true,
+    'India-Forts': true,
     'Nepal-Parks': true,
     'Nepal-Temples': true,
+    'Nepal-UNESCO': true,
     'Sri Lanka-Parks': true,
     'Sri Lanka-Temples': true,
+    'Sri Lanka-UNESCO': true,
     'Costa Rica': true
   })
   const [showHeatMap, setShowHeatMap] = useState(false)
@@ -318,6 +321,8 @@ function MapView() {
           region = 'India-Mutts'
         } else if (park.IndiaCategory === 'DivyaDesam') {
           region = 'India-DivyaDesam'
+        } else if (park.IndiaCategory === 'Forts') {
+          region = 'India-Forts'
         } else {
           region = 'India-Parks'
         }
@@ -326,6 +331,8 @@ function MapView() {
         // If NepalCategory is missing or invalid, default to Nepal-Parks
         if (park.NepalCategory === 'Temples') {
           region = 'Nepal-Temples'
+        } else if (park.NepalCategory === 'UNESCO') {
+          region = 'Nepal-UNESCO'
         } else {
           // Default to Nepal-Parks for all other Nepal entries
           region = 'Nepal-Parks'
@@ -334,6 +341,8 @@ function MapView() {
         // Use SriLankaCategory to determine sub-region
         if (park.SriLankaCategory === 'Temples') {
           region = 'Sri Lanka-Temples'
+        } else if (park.SriLankaCategory === 'UNESCO') {
+          region = 'Sri Lanka-UNESCO'
         } else {
           region = 'Sri Lanka-Parks'
         }
@@ -375,7 +384,7 @@ function MapView() {
       const isVisible = visibleRegions[region] === true
       
       // Additional safety check: if park is in Nepal region but region is not visible, filter it out
-      if (region === 'Nepal-Parks' || region === 'Nepal-Temples') {
+      if (region === 'Nepal-Parks' || region === 'Nepal-Temples' || region === 'Nepal-UNESCO') {
         if (!isVisible) {
           return false
         }
@@ -390,13 +399,17 @@ function MapView() {
     .filter(park => {
       // Final safety filter: explicitly remove any Nepal parks if their regions are not visible
       if (park.Country === 'Nepal') {
-        const isNepalPark = !park.NepalCategory || park.NepalCategory !== 'Temples'
+        const isNepalPark = !park.NepalCategory || (park.NepalCategory !== 'Temples' && park.NepalCategory !== 'UNESCO')
         const isNepalTemple = park.NepalCategory === 'Temples'
+        const isNepalUnesco = park.NepalCategory === 'UNESCO'
         
         if (isNepalPark && visibleRegions['Nepal-Parks'] !== true) {
           return false
         }
         if (isNepalTemple && visibleRegions['Nepal-Temples'] !== true) {
+          return false
+        }
+        if (isNepalUnesco && visibleRegions['Nepal-UNESCO'] !== true) {
           return false
         }
       }
@@ -529,12 +542,15 @@ function MapView() {
         'India-OtherTemples': { center: [20.5937, 78.9629], zoom: 5 },
         'India-Mutts': { center: [20.5937, 78.9629], zoom: 5 },
         'India-DivyaDesam': { center: [20.5937, 78.9629], zoom: 5 },
+        'India-Forts': { center: [20.5937, 78.9629], zoom: 5 },
         'Nepal': { center: [28.3949, 84.1240], zoom: 7 },
         'Nepal-Parks': { center: [28.3949, 84.1240], zoom: 7 },
         'Nepal-Temples': { center: [27.7172, 85.3240], zoom: 8 },
+        'Nepal-UNESCO': { center: [27.7172, 85.3240], zoom: 7 },
         'Sri Lanka': { center: [7.8731, 80.7718], zoom: 7 },
         'Sri Lanka-Parks': { center: [7.8731, 80.7718], zoom: 7 },
         'Sri Lanka-Temples': { center: [7.2944, 80.6414], zoom: 8 },
+        'Sri Lanka-UNESCO': { center: [7.8731, 80.7718], zoom: 7 },
         'Costa Rica': { center: [9.7489, -83.7534], zoom: 7 }
       }
       return countryCenters[regionName] || null
@@ -589,7 +605,7 @@ function MapView() {
   }
 
   const toggleAllIndiaRegions = (show, shouldFocus = false) => {
-    const indiaRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Mutts', 'India-DivyaDesam']
+    const indiaRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Mutts', 'India-DivyaDesam', 'India-Forts']
     setVisibleRegions(prev => {
       const updated = { ...prev }
       indiaRegions.forEach(region => {
@@ -604,7 +620,7 @@ function MapView() {
   }
 
   const areAllIndiaRegionsVisible = () => {
-    const indiaRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Mutts', 'India-DivyaDesam']
+    const indiaRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Mutts', 'India-DivyaDesam', 'India-Forts']
     return indiaRegions.every(region => visibleRegions[region] !== false)
   }
 
@@ -623,7 +639,7 @@ function MapView() {
   }
 
   const areAllNepalRegionsVisible = () => {
-    const nepalRegions = ['Nepal-Parks', 'Nepal-Temples']
+    const nepalRegions = ['Nepal-Parks', 'Nepal-Temples', 'Nepal-UNESCO']
     return nepalRegions.every(region => visibleRegions[region] !== false)
   }
 
@@ -642,7 +658,7 @@ function MapView() {
   }
 
   const areAllSriLankaRegionsVisible = () => {
-    const sriLankaRegions = ['Sri Lanka-Parks', 'Sri Lanka-Temples']
+    const sriLankaRegions = ['Sri Lanka-Parks', 'Sri Lanka-Temples', 'Sri Lanka-UNESCO']
     return sriLankaRegions.every(region => visibleRegions[region] !== false)
   }
 
@@ -805,6 +821,74 @@ function MapView() {
           border-radius: 50% 50% 50% 0;
           transform: rotate(-45deg);
           border: 3px solid #FF8C00;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        ">
+          <div style="
+            transform: rotate(45deg);
+            color: white;
+            font-size: 18px;
+            line-height: 1;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+          ">🏛️</div>
+        </div>`,
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
+        popupAnchor: [0, -30]
+      })
+    }
+    
+    // Check if it's a Historic Fort
+    const isFort = park.IndiaCategory === 'Forts' || 
+                   (park.Designation && park.Designation.includes('Fort'))
+    
+    if (isFort) {
+      // Use custom Fort icon with castle emoji (🏰) - brown/terracotta color
+      return L.divIcon({
+        className: 'fort-marker',
+        html: `<div style="
+          background-color: #8B4513;
+          width: 30px;
+          height: 30px;
+          border-radius: 50% 50% 50% 0;
+          transform: rotate(-45deg);
+          border: 3px solid #654321;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        ">
+          <div style="
+            transform: rotate(45deg);
+            color: white;
+            font-size: 18px;
+            line-height: 1;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+          ">🏰</div>
+        </div>`,
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
+        popupAnchor: [0, -30]
+      })
+    }
+    
+    // Check if it's a Nepal or Sri Lanka UNESCO site
+    const isNepalUnesco = park.NepalCategory === 'UNESCO'
+    const isSriLankaUnesco = park.SriLankaCategory === 'UNESCO'
+    
+    if (isNepalUnesco || isSriLankaUnesco) {
+      // Use UNESCO icon (🏛️) with light violet color (same as India UNESCO)
+      return L.divIcon({
+        className: 'unesco-marker',
+        html: `<div style="
+          background-color: #CE93D8;
+          width: 30px;
+          height: 30px;
+          border-radius: 50% 50% 50% 0;
+          transform: rotate(-45deg);
+          border: 3px solid #BA68C8;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1083,9 +1167,10 @@ function MapView() {
           if (country === 'Nepal') {
             const nepalParksVisible = visibleRegions['Nepal-Parks'] === true
             const nepalTemplesVisible = visibleRegions['Nepal-Temples'] === true
+            const nepalUnescoVisible = visibleRegions['Nepal-UNESCO'] === true
             
-            // If both Nepal regions are false or undefined, definitely skip
-            if (nepalParksVisible !== true && nepalTemplesVisible !== true) {
+            // If all Nepal regions are false or undefined, definitely skip
+            if (nepalParksVisible !== true && nepalTemplesVisible !== true && nepalUnescoVisible !== true) {
               return null
             }
             
@@ -1093,8 +1178,12 @@ function MapView() {
             if (park.NepalCategory === 'Temples' && nepalTemplesVisible !== true) {
               return null
             }
-            // If it's not a temple but parks are not visible, skip
-            if (park.NepalCategory !== 'Temples' && nepalParksVisible !== true) {
+            // If it's UNESCO but UNESCO is not visible, skip
+            if (park.NepalCategory === 'UNESCO' && nepalUnescoVisible !== true) {
+              return null
+            }
+            // If it's not a temple or UNESCO but parks are not visible, skip
+            if (park.NepalCategory !== 'Temples' && park.NepalCategory !== 'UNESCO' && nepalParksVisible !== true) {
               return null
             }
           }
