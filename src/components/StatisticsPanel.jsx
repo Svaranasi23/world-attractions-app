@@ -213,7 +213,7 @@ function StatisticsPanel({ parks, regions, activeTab, setActiveTab }) {
                 <li>🏞️ Parks: {regions['Nepal-Parks']?.length || 0}</li>
                 <li>🛕 Temples: {regions['Nepal-Temples']?.length || 0}</li>
                 <li>🏛️ UNESCO Sites: {regions['Nepal-UNESCO']?.length || 0}</li>
-                <li>⛰️ Trekking & Flights: {regions['Nepal-TrekkingFlights']?.length || 0}</li>
+                <li>⛰️ Trekking: {regions['Nepal-TrekkingFlights']?.length || 0}</li>
               </ul>
               {stats.topNepalStates.length > 0 && (
                 <div>

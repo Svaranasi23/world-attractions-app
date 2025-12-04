@@ -2,7 +2,7 @@ import csv
 
 def get_nepal_trekking_flights():
     """
-    Create Nepal Himalayan Trekking Routes and Mountain Flights CSV data
+    Create Nepal Himalayan Trekking Routes CSV data
     """
     
     trekking_flights = [
@@ -118,35 +118,6 @@ def get_nepal_trekking_flights():
             'Activity_Type': 'Trekking',
             'Duration_Days': '12-14',
             'Difficulty': 'Moderate to Challenging'
-        },
-        # Mountain Flights
-        {
-            'Park_Code': 'EVF',
-            'Name': 'Everest Experience Flight',
-            'Designation': 'Mountain Flight',
-            'States': 'Kathmandu',
-            'Latitude': '27.7172',
-            'Longitude': '85.3240',
-            'Description': 'Everest Experience Flight - One-hour scenic flight from Kathmandu offering close-up views of Mount Everest and neighboring peaks including Lhotse, Makalu, and Cho Oyu.',
-            'URL': 'https://www.buddhaair.com/mountain-flights',
-            'Country': 'Nepal',
-            'Activity_Type': 'Mountain Flight',
-            'Duration_Days': '1 hour',
-            'Difficulty': 'Easy'
-        },
-        {
-            'Park_Code': 'ANF',
-            'Name': 'Annapurna Experience Flight',
-            'Designation': 'Mountain Flight',
-            'States': 'Pokhara',
-            'Latitude': '28.2096',
-            'Longitude': '83.9856',
-            'Description': 'Annapurna Experience Flight - Scenic flight from Pokhara showcasing the Annapurna and Dhaulagiri ranges, including Machapuchare (Fishtail Mountain).',
-            'URL': 'https://www.buddhaair.com/mountain-flights',
-            'Country': 'Nepal',
-            'Activity_Type': 'Mountain Flight',
-            'Duration_Days': '1 hour',
-            'Difficulty': 'Easy'
         }
     ]
     
@@ -165,10 +136,10 @@ def save_nepal_trekking_flights_csv(data, filename):
         writer.writeheader()
         writer.writerows(data)
     
-    print(f"Saved {len(data)} Nepal trekking routes and mountain flights to {filename}")
+    print(f"Saved {len(data)} Nepal trekking routes to {filename}")
 
 if __name__ == '__main__':
-    print("Creating Nepal Himalayan Trekking and Mountain Flights data...")
+    print("Creating Nepal Himalayan Trekking Routes data...")
     
     trekking_flights_data = get_nepal_trekking_flights()
     
