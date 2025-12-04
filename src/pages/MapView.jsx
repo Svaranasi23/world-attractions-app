@@ -1059,29 +1059,11 @@ function MapView() {
   }
 
   const getAirportIcon = (airport) => {
-    // Get country color
-    const country = airport?.Country || 'United States'
-    let color = '#4CAF50' // Green for US
-    let borderColor = '#2E7D32' // Darker green
+    // Use light blue for all airports
+    const color = '#87CEEB' // Light blue (sky blue)
+    const borderColor = '#4682B4' // Steel blue border
     
-    if (country === 'Canada') {
-      color = '#F44336' // Red
-      borderColor = '#C62828' // Darker red
-    } else if (country === 'India') {
-      color = '#FF9933' // Saffron
-      borderColor = '#FF8C00' // Darker saffron border
-    } else if (country === 'Nepal') {
-      color = '#FFEB3B' // Yellow
-      borderColor = '#FBC02D' // Darker yellow border
-    } else if (country === 'Sri Lanka') {
-      color = '#FFF59D' // Light yellow
-      borderColor = '#FDD835' // Yellow border
-    } else if (country === 'Costa Rica') {
-      color = '#9C27B0' // Violet
-      borderColor = '#7B1FA2' // Darker violet
-    }
-    
-    // Create custom airplane icon with country color
+    // Create custom airplane icon with light blue color
     return L.divIcon({
       className: 'airport-marker',
       html: `<div style="
