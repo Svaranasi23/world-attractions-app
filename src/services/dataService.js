@@ -31,7 +31,7 @@ export const loadCSVData = async (filename) => {
  */
 export const loadParksData = async () => {
   try {
-    const [usParks, canadianParks, indianParks, indianUnescoSites, indianJyotirlinga, indianShaktiPeethas, indianOtherTemples, indianMutts, indianDivyaDesams, indianForts, nepalParks, nepalTemples, nepalUnescoSites, nepalTrekkingFlights, sriLankaParks, sriLankaTemples, costaRicaParks] = await Promise.all([
+    const [usParks, canadianParks, indianParks, indianUnescoSites, indianJyotirlinga, indianShaktiPeethas, indianOtherTemples, indianMutts, indianDivyaDesams, indianForts, nepalParks, nepalTemples, nepalUnescoSites, nepalTrekkingFlights, sriLankaParks, sriLankaTemples, sriLankaUnescoSites, costaRicaParks, chinaUnescoSites, japanUnescoSites, thailandUnescoSites, indonesiaUnescoSites, vietnamUnescoSites, cambodiaUnescoSites, myanmarUnescoSites, bangladeshUnescoSites, pakistanUnescoSites] = await Promise.all([
       loadCSVData('US_National_Parks.csv'),
       loadCSVData('Canadian_National_Parks.csv').catch(() => []),
       loadCSVData('Indian_National_Parks.csv').catch(() => []),
@@ -48,7 +48,17 @@ export const loadParksData = async () => {
       loadCSVData('Nepal_Trekking_Flights.csv').catch(() => []),
       loadCSVData('Sri_Lanka_National_Parks.csv').catch(() => []),
       loadCSVData('Sri_Lanka_Temples.csv').catch(() => []),
-      loadCSVData('Costa_Rica_National_Parks.csv').catch(() => [])
+      loadCSVData('Sri_Lanka_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Costa_Rica_National_Parks.csv').catch(() => []),
+      loadCSVData('China_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Japan_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Thailand_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Indonesia_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Vietnam_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Cambodia_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Myanmar_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Bangladesh_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Pakistan_UNESCO_Sites.csv').catch(() => [])
     ])
     
     // Process US parks
@@ -273,6 +283,22 @@ export const loadParksData = async () => {
       id: `lk-temple-${temple.Park_Code || Math.random()}`
     }))
     
+    // Process Sri Lanka UNESCO sites
+    const processedSriLankaUnesco = sriLankaUnescoSites.map(site => ({
+      Park_Code: site.Park_Code || '',
+      Name: site.Name || '',
+      Designation: site.Designation || 'UNESCO World Heritage Site',
+      States: site.States || '',
+      Latitude: site.Latitude || '0',
+      Longitude: site.Longitude || '0',
+      Description: site.Description || `UNESCO World Heritage Site in ${site.States || ''}`,
+      URL: site.URL || '',
+      Country: 'Sri Lanka',
+      SriLankaCategory: 'UNESCO', // Categorize as UNESCO sites
+      UNESCO_Year: site.UNESCO_Year || '',
+      id: `lk-unesco-${site.Park_Code || Math.random()}`
+    }))
+    
     // Process Costa Rica parks
     const processedCostaRicaParks = costaRicaParks.map(park => ({
       Park_Code: park.Park_Code || '',
@@ -285,6 +311,133 @@ export const loadParksData = async () => {
       URL: park.URL || '',
       Country: 'Costa Rica',
       id: `cr-${park.Park_Code || Math.random()}`
+    }))
+    
+    // Process Asian UNESCO sites
+    const processedChinaUnesco = chinaUnescoSites.map(site => ({
+      Park_Code: site.Park_Code || '',
+      Name: site.Name || '',
+      Designation: site.Designation || 'UNESCO World Heritage Site',
+      States: site.States || '',
+      Latitude: site.Latitude || '0',
+      Longitude: site.Longitude || '0',
+      Description: site.Description || `UNESCO World Heritage Site in ${site.States || ''}`,
+      URL: site.URL || '',
+      Country: 'China',
+      UNESCO_Year: site.UNESCO_Year || '',
+      id: `cn-unesco-${site.Park_Code || Math.random()}`
+    }))
+    
+    const processedJapanUnesco = japanUnescoSites.map(site => ({
+      Park_Code: site.Park_Code || '',
+      Name: site.Name || '',
+      Designation: site.Designation || 'UNESCO World Heritage Site',
+      States: site.States || '',
+      Latitude: site.Latitude || '0',
+      Longitude: site.Longitude || '0',
+      Description: site.Description || `UNESCO World Heritage Site in ${site.States || ''}`,
+      URL: site.URL || '',
+      Country: 'Japan',
+      UNESCO_Year: site.UNESCO_Year || '',
+      id: `jp-unesco-${site.Park_Code || Math.random()}`
+    }))
+    
+    const processedThailandUnesco = thailandUnescoSites.map(site => ({
+      Park_Code: site.Park_Code || '',
+      Name: site.Name || '',
+      Designation: site.Designation || 'UNESCO World Heritage Site',
+      States: site.States || '',
+      Latitude: site.Latitude || '0',
+      Longitude: site.Longitude || '0',
+      Description: site.Description || `UNESCO World Heritage Site in ${site.States || ''}`,
+      URL: site.URL || '',
+      Country: 'Thailand',
+      UNESCO_Year: site.UNESCO_Year || '',
+      id: `th-unesco-${site.Park_Code || Math.random()}`
+    }))
+    
+    const processedIndonesiaUnesco = indonesiaUnescoSites.map(site => ({
+      Park_Code: site.Park_Code || '',
+      Name: site.Name || '',
+      Designation: site.Designation || 'UNESCO World Heritage Site',
+      States: site.States || '',
+      Latitude: site.Latitude || '0',
+      Longitude: site.Longitude || '0',
+      Description: site.Description || `UNESCO World Heritage Site in ${site.States || ''}`,
+      URL: site.URL || '',
+      Country: 'Indonesia',
+      UNESCO_Year: site.UNESCO_Year || '',
+      id: `id-unesco-${site.Park_Code || Math.random()}`
+    }))
+    
+    const processedVietnamUnesco = vietnamUnescoSites.map(site => ({
+      Park_Code: site.Park_Code || '',
+      Name: site.Name || '',
+      Designation: site.Designation || 'UNESCO World Heritage Site',
+      States: site.States || '',
+      Latitude: site.Latitude || '0',
+      Longitude: site.Longitude || '0',
+      Description: site.Description || `UNESCO World Heritage Site in ${site.States || ''}`,
+      URL: site.URL || '',
+      Country: 'Vietnam',
+      UNESCO_Year: site.UNESCO_Year || '',
+      id: `vn-unesco-${site.Park_Code || Math.random()}`
+    }))
+    
+    const processedCambodiaUnesco = cambodiaUnescoSites.map(site => ({
+      Park_Code: site.Park_Code || '',
+      Name: site.Name || '',
+      Designation: site.Designation || 'UNESCO World Heritage Site',
+      States: site.States || '',
+      Latitude: site.Latitude || '0',
+      Longitude: site.Longitude || '0',
+      Description: site.Description || `UNESCO World Heritage Site in ${site.States || ''}`,
+      URL: site.URL || '',
+      Country: 'Cambodia',
+      UNESCO_Year: site.UNESCO_Year || '',
+      id: `kh-unesco-${site.Park_Code || Math.random()}`
+    }))
+    
+    const processedMyanmarUnesco = myanmarUnescoSites.map(site => ({
+      Park_Code: site.Park_Code || '',
+      Name: site.Name || '',
+      Designation: site.Designation || 'UNESCO World Heritage Site',
+      States: site.States || '',
+      Latitude: site.Latitude || '0',
+      Longitude: site.Longitude || '0',
+      Description: site.Description || `UNESCO World Heritage Site in ${site.States || ''}`,
+      URL: site.URL || '',
+      Country: 'Myanmar',
+      UNESCO_Year: site.UNESCO_Year || '',
+      id: `mm-unesco-${site.Park_Code || Math.random()}`
+    }))
+    
+    const processedBangladeshUnesco = bangladeshUnescoSites.map(site => ({
+      Park_Code: site.Park_Code || '',
+      Name: site.Name || '',
+      Designation: site.Designation || 'UNESCO World Heritage Site',
+      States: site.States || '',
+      Latitude: site.Latitude || '0',
+      Longitude: site.Longitude || '0',
+      Description: site.Description || `UNESCO World Heritage Site in ${site.States || ''}`,
+      URL: site.URL || '',
+      Country: 'Bangladesh',
+      UNESCO_Year: site.UNESCO_Year || '',
+      id: `bd-unesco-${site.Park_Code || Math.random()}`
+    }))
+    
+    const processedPakistanUnesco = pakistanUnescoSites.map(site => ({
+      Park_Code: site.Park_Code || '',
+      Name: site.Name || '',
+      Designation: site.Designation || 'UNESCO World Heritage Site',
+      States: site.States || '',
+      Latitude: site.Latitude || '0',
+      Longitude: site.Longitude || '0',
+      Description: site.Description || `UNESCO World Heritage Site in ${site.States || ''}`,
+      URL: site.URL || '',
+      Country: 'Pakistan',
+      UNESCO_Year: site.UNESCO_Year || '',
+      id: `pk-unesco-${site.Park_Code || Math.random()}`
     }))
     
     // Process Indian Mutts
@@ -359,7 +512,7 @@ export const loadParksData = async () => {
         id: `in-fort-${fort.Park_Code || Math.random()}`
       }))
     
-    return [...processedUSParks, ...processedCanadianParks, ...processedIndianParks, ...processedIndianUnesco, ...processedIndianJyotirlinga, ...processedIndianShaktiPeethas, ...processedIndianOtherTemples, ...processedIndianMutts, ...processedIndianDivyaDesams, ...processedIndianForts, ...processedNepalParks, ...processedNepalTemples, ...processedNepalUnesco, ...processedNepalTrekkingFlights, ...processedSriLankaParks, ...processedSriLankaTemples, ...processedCostaRicaParks]
+    return [...processedUSParks, ...processedCanadianParks, ...processedIndianParks, ...processedIndianUnesco, ...processedIndianJyotirlinga, ...processedIndianShaktiPeethas, ...processedIndianOtherTemples, ...processedIndianMutts, ...processedIndianDivyaDesams, ...processedIndianForts, ...processedNepalParks, ...processedNepalTemples, ...processedNepalUnesco, ...processedNepalTrekkingFlights, ...processedSriLankaParks, ...processedSriLankaTemples, ...processedSriLankaUnesco, ...processedCostaRicaParks, ...processedChinaUnesco, ...processedJapanUnesco, ...processedThailandUnesco, ...processedIndonesiaUnesco, ...processedVietnamUnesco, ...processedCambodiaUnesco, ...processedMyanmarUnesco, ...processedBangladeshUnesco, ...processedPakistanUnesco]
   } catch (error) {
     console.error('Error loading parks data:', error)
     return []
@@ -495,6 +648,7 @@ export const categorizeParksByRegion = (parks) => {
     'Nepal-TrekkingFlights': [],
     'Sri Lanka-Parks': [],
     'Sri Lanka-Temples': [],
+    'Sri Lanka-UNESCO': [],
     'Costa Rica': []
   }
   
@@ -539,8 +693,10 @@ export const categorizeParksByRegion = (parks) => {
         regions['Nepal-Parks'].push(park)
       }
     } else if (country === 'Sri Lanka') {
-      // Separate Sri Lanka parks and temples
-      if (park.SriLankaCategory === 'Temples') {
+      // Separate Sri Lanka parks, temples, and UNESCO sites
+      if (park.SriLankaCategory === 'UNESCO') {
+        regions['Sri Lanka-UNESCO'].push(park)
+      } else if (park.SriLankaCategory === 'Temples') {
         regions['Sri Lanka-Temples'].push(park)
       } else {
         regions['Sri Lanka-Parks'].push(park)

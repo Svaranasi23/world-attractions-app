@@ -242,10 +242,11 @@ function StatisticsPanel({ parks, regions, activeTab, setActiveTab }) {
           </div>
           {expandedCountries['Sri Lanka'] && (
             <div className="country-details">
-              <p>Total Attractions: {(regions['Sri Lanka-Parks']?.length || 0) + (regions['Sri Lanka-Temples']?.length || 0)}</p>
+              <p>Total Attractions: {(regions['Sri Lanka-Parks']?.length || 0) + (regions['Sri Lanka-Temples']?.length || 0) + (regions['Sri Lanka-UNESCO']?.length || 0)}</p>
               <ul>
                 <li>🏞️ Parks: {regions['Sri Lanka-Parks']?.length || 0}</li>
                 <li>🛕 Temples: {regions['Sri Lanka-Temples']?.length || 0}</li>
+                <li>🏛️ UNESCO Sites: {regions['Sri Lanka-UNESCO']?.length || 0}</li>
               </ul>
               {stats.topSriLankaStates.length > 0 && (
                 <div>
