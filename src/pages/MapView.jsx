@@ -198,7 +198,8 @@ function MapView() {
     'EastAsia-UNESCO': true,
     'SouthAsia-UNESCO': true,
     'CentralAsia-UNESCO': true,
-    'WestAsia-UNESCO': true
+    'WestAsia-UNESCO': true,
+    'CentralAmerica-UNESCO': true
   })
   const [showHeatMap, setShowHeatMap] = useState(false)
   const [showAirports, setShowAirports] = useState(false)
@@ -406,6 +407,9 @@ function MapView() {
       } else if (['Iran', 'Iraq', 'Jordan', 'Lebanon', 'Saudi Arabia', 'Syria', 'Turkey', 'UAE', 'United Arab Emirates', 'Yemen', 'Oman', 'Qatar', 'Kuwait', 'Bahrain', 'Israel', 'Palestine'].includes(country)) {
         // West Asian / Middle Eastern countries
         region = 'WestAsia-UNESCO'
+      } else if (['Belize', 'Guatemala', 'Honduras', 'El Salvador', 'Nicaragua', 'Panama', 'Mexico'].includes(country)) {
+        // Central American countries
+        region = 'CentralAmerica-UNESCO'
       } else if (country === 'United States') {
         if (states.includes('AK')) {
           region = 'Alaska'
@@ -635,7 +639,8 @@ function MapView() {
         'EastAsia-UNESCO': { center: [35.0, 120.0], zoom: 4 },
         'SouthAsia-UNESCO': { center: [28.0, 75.0], zoom: 5 },
         'CentralAsia-UNESCO': { center: [45.0, 70.0], zoom: 4 },
-        'WestAsia-UNESCO': { center: [30.0, 45.0], zoom: 4 }
+        'WestAsia-UNESCO': { center: [30.0, 45.0], zoom: 4 },
+        'CentralAmerica-UNESCO': { center: [17.0, -90.0], zoom: 5 }
       }
       return countryCenters[regionName] || null
     }

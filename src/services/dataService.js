@@ -45,7 +45,7 @@ export const loadCSVData = async (filename) => {
  */
 export const loadParksData = async () => {
   try {
-    const [usParks, canadianParks, indianParks, indianUnescoSites, indianJyotirlinga, indianShaktiPeethas, indianOtherTemples, indianMutts, indianDivyaDesams, indianForts, nepalParks, nepalTemples, nepalUnescoSites, nepalTrekkingFlights, sriLankaParks, sriLankaTemples, sriLankaUnescoSites, costaRicaParks, chinaUnescoSites, japanUnescoSites, southKoreaUnescoSites, thailandUnescoSites, indonesiaUnescoSites, vietnamUnescoSites, cambodiaUnescoSites, myanmarUnescoSites, philippinesUnescoSites, malaysiaUnescoSites, singaporeUnescoSites, laosUnescoSites, bruneiUnescoSites, eastTimorUnescoSites, bangladeshUnescoSites, pakistanUnescoSites, afghanistanUnescoSites, bhutanUnescoSites, maldivesUnescoSites, kazakhstanUnescoSites, kyrgyzstanUnescoSites, tajikistanUnescoSites, turkmenistanUnescoSites, uzbekistanUnescoSites, iranUnescoSites, iraqUnescoSites, jordanUnescoSites, lebanonUnescoSites, saudiArabiaUnescoSites, syriaUnescoSites, turkeyUnescoSites, uaeUnescoSites, yemenUnescoSites, omanUnescoSites, qatarUnescoSites, kuwaitUnescoSites, bahrainUnescoSites, israelUnescoSites, palestineUnescoSites] = await Promise.all([
+    const [usParks, canadianParks, indianParks, indianUnescoSites, indianJyotirlinga, indianShaktiPeethas, indianOtherTemples, indianMutts, indianDivyaDesams, indianForts, nepalParks, nepalTemples, nepalUnescoSites, nepalTrekkingFlights, sriLankaParks, sriLankaTemples, sriLankaUnescoSites, costaRicaParks, chinaUnescoSites, japanUnescoSites, southKoreaUnescoSites, thailandUnescoSites, indonesiaUnescoSites, vietnamUnescoSites, cambodiaUnescoSites, myanmarUnescoSites, philippinesUnescoSites, malaysiaUnescoSites, singaporeUnescoSites, laosUnescoSites, bruneiUnescoSites, eastTimorUnescoSites, bangladeshUnescoSites, pakistanUnescoSites, afghanistanUnescoSites, bhutanUnescoSites, maldivesUnescoSites, kazakhstanUnescoSites, kyrgyzstanUnescoSites, tajikistanUnescoSites, turkmenistanUnescoSites, uzbekistanUnescoSites, iranUnescoSites, iraqUnescoSites, jordanUnescoSites, lebanonUnescoSites, saudiArabiaUnescoSites, syriaUnescoSites, turkeyUnescoSites, uaeUnescoSites, yemenUnescoSites, omanUnescoSites, qatarUnescoSites, kuwaitUnescoSites, bahrainUnescoSites, israelUnescoSites, palestineUnescoSites, belizeUnescoSites, guatemalaUnescoSites, hondurasUnescoSites, elSalvadorUnescoSites, nicaraguaUnescoSites, panamaUnescoSites, mexicoUnescoSites] = await Promise.all([
       loadCSVData('US_National_Parks.csv'),
       loadCSVData('Canadian_National_Parks.csv').catch(() => []),
       loadCSVData('Indian_National_Parks.csv').catch(() => []),
@@ -107,7 +107,15 @@ export const loadParksData = async () => {
       loadCSVData('Kuwait_UNESCO_Sites.csv').catch(() => []),
       loadCSVData('Bahrain_UNESCO_Sites.csv').catch(() => []),
       loadCSVData('Israel_UNESCO_Sites.csv').catch(() => []),
-      loadCSVData('Palestine_UNESCO_Sites.csv').catch(() => [])
+      loadCSVData('Palestine_UNESCO_Sites.csv').catch(() => []),
+      // Central America
+      loadCSVData('Belize_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Guatemala_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Honduras_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('El_Salvador_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Nicaragua_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Panama_UNESCO_Sites.csv').catch(() => []),
+      loadCSVData('Mexico_UNESCO_Sites.csv').catch(() => [])
     ])
     
     // Process US parks
@@ -591,6 +599,15 @@ export const loadParksData = async () => {
     const processedIsraelUnesco = processUnescoSites(israelUnescoSites, 'Israel', 'il')
     const processedPalestineUnesco = processUnescoSites(palestineUnescoSites, 'Palestine', 'ps')
     
+    // Process Central American UNESCO sites
+    const processedBelizeUnesco = processUnescoSites(belizeUnescoSites, 'Belize', 'bz')
+    const processedGuatemalaUnesco = processUnescoSites(guatemalaUnescoSites, 'Guatemala', 'gt')
+    const processedHondurasUnesco = processUnescoSites(hondurasUnescoSites, 'Honduras', 'hn')
+    const processedElSalvadorUnesco = processUnescoSites(elSalvadorUnescoSites, 'El Salvador', 'sv')
+    const processedNicaraguaUnesco = processUnescoSites(nicaraguaUnescoSites, 'Nicaragua', 'ni')
+    const processedPanamaUnesco = processUnescoSites(panamaUnescoSites, 'Panama', 'pa')
+    const processedMexicoUnesco = processUnescoSites(mexicoUnescoSites, 'Mexico', 'mx')
+    
     // Process Indian Mutts
     const processedIndianMutts = indianMutts
       .filter(mutt => {
@@ -678,7 +695,9 @@ export const loadParksData = async () => {
       // Central Asia
       ...processedKazakhstanUnesco, ...processedKyrgyzstanUnesco, ...processedTajikistanUnesco, ...processedTurkmenistanUnesco, ...processedUzbekistanUnesco,
       // West Asia / Middle East
-      ...processedIranUnesco, ...processedIraqUnesco, ...processedJordanUnesco, ...processedLebanonUnesco, ...processedSaudiArabiaUnesco, ...processedSyriaUnesco, ...processedTurkeyUnesco, ...processedUaeUnesco, ...processedYemenUnesco, ...processedOmanUnesco, ...processedQatarUnesco, ...processedKuwaitUnesco, ...processedBahrainUnesco, ...processedIsraelUnesco, ...processedPalestineUnesco
+      ...processedIranUnesco, ...processedIraqUnesco, ...processedJordanUnesco, ...processedLebanonUnesco, ...processedSaudiArabiaUnesco, ...processedSyriaUnesco, ...processedTurkeyUnesco, ...processedUaeUnesco, ...processedYemenUnesco, ...processedOmanUnesco, ...processedQatarUnesco, ...processedKuwaitUnesco, ...processedBahrainUnesco, ...processedIsraelUnesco, ...processedPalestineUnesco,
+      // Central America
+      ...processedBelizeUnesco, ...processedGuatemalaUnesco, ...processedHondurasUnesco, ...processedElSalvadorUnesco, ...processedNicaraguaUnesco, ...processedPanamaUnesco, ...processedMexicoUnesco
     ]
   } catch (error) {
     console.error('Error loading parks data:', error)
@@ -821,7 +840,8 @@ export const categorizeParksByRegion = (parks) => {
     'EastAsia-UNESCO': [],
     'SouthAsia-UNESCO': [],
     'CentralAsia-UNESCO': [],
-    'WestAsia-UNESCO': []
+    'WestAsia-UNESCO': [],
+    'CentralAmerica-UNESCO': []
   }
   
   parks.forEach(park => {
@@ -890,6 +910,9 @@ export const categorizeParksByRegion = (parks) => {
     } else if (['Iran', 'Iraq', 'Jordan', 'Lebanon', 'Saudi Arabia', 'Syria', 'Turkey', 'UAE', 'United Arab Emirates', 'Yemen', 'Oman', 'Qatar', 'Kuwait', 'Bahrain', 'Israel', 'Palestine'].includes(country)) {
       // West Asian / Middle Eastern countries
       regions['WestAsia-UNESCO'].push(park)
+    } else if (['Belize', 'Guatemala', 'Honduras', 'El Salvador', 'Nicaragua', 'Panama', 'Mexico'].includes(country)) {
+      // Central American countries
+      regions['CentralAmerica-UNESCO'].push(park)
     } else {
       if (states.includes('AK')) {
         regions.Alaska.push(park)
