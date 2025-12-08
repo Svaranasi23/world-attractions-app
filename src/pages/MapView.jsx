@@ -8,6 +8,7 @@ import TabPanel from '../components/TabPanel'
 import MapController from '../components/MapController'
 import AttractionTypeFilter from '../components/AttractionTypeFilter'
 import AttractionSearch from '../components/AttractionSearch'
+import MapLegend from '../components/MapLegend'
 import './MapView.css'
 
 // Fix for default marker icons in React Leaflet
@@ -1563,6 +1564,7 @@ function MapView() {
         onSearch={handleSearch}
         onSelectAttraction={handleSelectAttraction}
       />
+      <MapLegend />
       <AttractionTypeFilter
         visibleTypes={visibleAttractionTypes}
         toggleType={toggleAttractionType}

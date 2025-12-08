@@ -1,0 +1,334 @@
+.map-legend-container {
+  position: fixed;
+  bottom: 20px;
+  right: 80px; /* Next to zoom controls (zoom controls are ~60px wide + 20px margin) */
+  z-index: 1002; /* Same as zoom controls */
+}
+
+.map-legend-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.3);
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: 44px;
+}
+
+.map-legend-toggle:hover {
+  background-color: #106ebe;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 120, 212, 0.4);
+}
+
+.map-legend-toggle:active {
+  transform: translateY(0);
+  background-color: #005a9e;
+}
+
+.legend-icon {
+  font-size: 18px;
+}
+
+.legend-toggle-text {
+  font-size: 14px;
+}
+
+.map-legend-content {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  width: 280px;
+  max-height: calc(100vh - 180px); /* Prevent overlap with top UI elements */
+  background: white;
+  border: 2px solid #0078d4;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Adjust legend content when filter panel is open */
+body.filter-panel-open .map-legend-content {
+  max-height: calc(100vh - 280px); /* More space needed when filter is open */
+}
+
+/* Adjust legend content when menu is open */
+body.menu-open .map-legend-content {
+  max-height: calc(100vh - 180px); /* Menu is on left, doesn't affect right side much */
+}
+
+.legend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: linear-gradient(135deg, #0078d4 0%, #106ebe 100%);
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.legend-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.legend-close-button {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  line-height: 1;
+  padding: 0;
+}
+
+.legend-close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.legend-close-button:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.legend-items {
+  padding: 12px;
+  overflow-y: auto;
+  max-height: 420px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-bottom: 1px solid #e1e1e1;
+  transition: background-color 0.2s ease;
+}
+
+.legend-item:last-child {
+  border-bottom: none;
+}
+
+.legend-item:hover {
+  background-color: #f3f2f1;
+}
+
+.legend-icon-wrapper {
+  flex-shrink: 0;
+}
+
+.legend-marker-preview {
+  width: 24px;
+  height: 24px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.legend-marker-icon {
+  transform: rotate(45deg);
+  font-size: 12px;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.legend-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.legend-item-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #323130;
+  margin-bottom: 2px;
+}
+
+.legend-item-note {
+  font-size: 11px;
+  color: #605e5c;
+  font-style: italic;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .map-legend-container {
+    bottom: 15px;
+    right: 70px; /* Next to zoom controls on mobile */
+  }
+
+  .map-legend-toggle {
+    padding: 12px 14px;
+    font-size: 13px;
+    min-height: 48px;
+  }
+
+  .legend-icon {
+    font-size: 16px;
+  }
+
+  .legend-toggle-text {
+    font-size: 13px;
+  }
+
+  .map-legend-content {
+    bottom: 60px;
+    right: 0;
+    width: calc(100vw - 90px); /* Account for filter icon on right */
+    max-width: 320px;
+    max-height: calc(100vh - 250px); /* Prevent overlap with search bar and other UI */
+  }
+
+  .legend-header {
+    padding: 14px;
+  }
+
+  .legend-header h3 {
+    font-size: 16px;
+  }
+
+  .legend-close-button {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 22px;
+  }
+
+  .legend-items {
+    padding: 10px;
+    max-height: calc(60vh - 60px);
+  }
+
+  .legend-item {
+    padding: 12px 8px;
+    gap: 10px;
+  }
+
+  .legend-marker-preview {
+    width: 28px;
+    height: 28px;
+  }
+
+  .legend-marker-icon {
+    font-size: 14px;
+  }
+
+  .legend-item-label {
+    font-size: 14px;
+  }
+
+  .legend-item-note {
+    font-size: 12px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .map-legend-container {
+    bottom: 15px;
+    right: 65px; /* Next to zoom controls */
+  }
+
+  .map-legend-toggle {
+    padding: 10px 12px;
+    font-size: 12px;
+    min-height: 44px;
+    gap: 6px;
+  }
+
+  .legend-icon {
+    font-size: 14px;
+  }
+
+  .legend-toggle-text {
+    font-size: 12px;
+  }
+
+  .map-legend-content {
+    bottom: 60px;
+    right: 0;
+    width: calc(100vw - 80px); /* Account for filter icon */
+    max-width: 300px;
+    max-height: calc(100vh - 240px); /* Prevent overlap */
+  }
+
+  .legend-header {
+    padding: 12px;
+  }
+
+  .legend-header h3 {
+    font-size: 15px;
+  }
+
+  .legend-items {
+    padding: 8px;
+    max-height: calc(55vh - 50px);
+  }
+
+  .legend-item {
+    padding: 10px 6px;
+  }
+
+  .legend-item-label {
+    font-size: 13px;
+  }
+
+  .legend-item-note {
+    font-size: 11px;
+  }
+}
+
+/* Very small mobile devices */
+@media (max-width: 360px) {
+  .map-legend-container {
+    bottom: 12px;
+    right: 60px; /* Next to zoom controls */
+  }
+
+  .map-legend-toggle {
+    padding: 8px 10px;
+    min-height: 40px;
+  }
+
+  .map-legend-content {
+    width: calc(100vw - 16px);
+    max-width: 280px;
+  }
+
+  .legend-header h3 {
+    font-size: 14px;
+  }
+}
+
