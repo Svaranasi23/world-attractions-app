@@ -157,7 +157,7 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
     <>
       {/* Hamburger Menu Button */}
       <button
-        className="hamburger-button"
+        className={`hamburger-button ${isOpen ? 'menu-open' : ''}`}
         onClick={toggleMenu}
         aria-label="Toggle menu"
         aria-expanded={isOpen}

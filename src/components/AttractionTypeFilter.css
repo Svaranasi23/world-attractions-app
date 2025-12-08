@@ -21,6 +21,13 @@
   touch-action: manipulation;
 }
 
+/* Lower z-index when menu is open to prevent overlap */
+body.menu-open .filter-icon-button {
+  z-index: 999;
+  opacity: 0.5;
+  pointer-events: none; /* Disable clicks when menu is open */
+}
+
 .filter-icon-button:hover {
   background-color: #106ebe;
   transform: scale(1.05);
