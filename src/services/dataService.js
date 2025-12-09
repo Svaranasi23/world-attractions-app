@@ -162,6 +162,12 @@ export const loadParksData = async () => {
       id: `ca-mp-${place.Park_Code || Math.random()}`
     }))
     
+    // Process Asia most photographed places
+    const processedAsiaMostPhotographed = asiaMostPhotographed.map(place => ({
+      ...place,
+      id: `asia-mp-${place.Park_Code || Math.random()}`
+    }))
+    
     // Process Indian parks
     const processedIndianParks = indianParks.map(park => ({
       Park_Code: park.Park_Code || '',

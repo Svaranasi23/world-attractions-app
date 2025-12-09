@@ -239,6 +239,7 @@ function MapView() {
         setParks(parksData)
         setAirports(airportsData)
         setLoading(false)
+        console.log('Loaded parks data:', parksData.length, 'parks')
       } catch (error) {
         console.error('Error loading data:', error)
         setLoading(false)
@@ -742,6 +743,15 @@ function MapView() {
              states.includes(query)
     })
   }, [parks, visibleRegions, visibleAttractionTypes, searchQuery])
+  
+  // Debug logging
+  useEffect(() => {
+    if (parks.length > 0) {
+      console.log('Total parks loaded:', parks.length)
+      console.log('Filtered parks:', filteredParks.length)
+      console.log('Visible regions (true):', Object.entries(visibleRegions).filter(([_, v]) => v === true).map(([k]) => k))
+    }
+  }, [parks.length, filteredParks.length, visibleRegions])
 
   // Filter airports to show only those near visible parks
   const filteredAirports = useMemo(() => {
