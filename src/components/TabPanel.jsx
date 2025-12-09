@@ -90,7 +90,49 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
       'South-eastern Asia UNESCO': 'SouthEastAsia-UNESCO',
       'Eastern Asia UNESCO': 'EastAsia-UNESCO',
       'Central Asia UNESCO': 'CentralAsia-UNESCO',
-      'Western Asia UNESCO': 'WestAsia-UNESCO'
+      'Western Asia UNESCO': 'WestAsia-UNESCO',
+      // Individual Asian countries
+      'China': 'EastAsia-UNESCO',
+      'Japan': 'EastAsia-UNESCO',
+      'South Korea': 'EastAsia-UNESCO',
+      'North Korea': 'EastAsia-UNESCO',
+      'Mongolia': 'EastAsia-UNESCO',
+      'Thailand': 'SouthEastAsia-UNESCO',
+      'Indonesia': 'SouthEastAsia-UNESCO',
+      'Vietnam': 'SouthEastAsia-UNESCO',
+      'Cambodia': 'SouthEastAsia-UNESCO',
+      'Myanmar': 'SouthEastAsia-UNESCO',
+      'Philippines': 'SouthEastAsia-UNESCO',
+      'Malaysia': 'SouthEastAsia-UNESCO',
+      'Singapore': 'SouthEastAsia-UNESCO',
+      'Laos': 'SouthEastAsia-UNESCO',
+      'Brunei': 'SouthEastAsia-UNESCO',
+      'East Timor': 'SouthEastAsia-UNESCO',
+      'Bangladesh': 'SouthAsia-UNESCO',
+      'Pakistan': 'SouthAsia-UNESCO',
+      'Afghanistan': 'SouthAsia-UNESCO',
+      'Bhutan': 'SouthAsia-UNESCO',
+      'Maldives': 'SouthAsia-UNESCO',
+      'Kazakhstan': 'CentralAsia-UNESCO',
+      'Kyrgyzstan': 'CentralAsia-UNESCO',
+      'Tajikistan': 'CentralAsia-UNESCO',
+      'Turkmenistan': 'CentralAsia-UNESCO',
+      'Uzbekistan': 'CentralAsia-UNESCO',
+      'Iran': 'WestAsia-UNESCO',
+      'Iraq': 'WestAsia-UNESCO',
+      'Jordan': 'WestAsia-UNESCO',
+      'Lebanon': 'WestAsia-UNESCO',
+      'Saudi Arabia': 'WestAsia-UNESCO',
+      'Syria': 'WestAsia-UNESCO',
+      'Turkey': 'WestAsia-UNESCO',
+      'UAE': 'WestAsia-UNESCO',
+      'Yemen': 'WestAsia-UNESCO',
+      'Oman': 'WestAsia-UNESCO',
+      'Qatar': 'WestAsia-UNESCO',
+      'Kuwait': 'WestAsia-UNESCO',
+      'Bahrain': 'WestAsia-UNESCO',
+      'Israel': 'WestAsia-UNESCO',
+      'Palestine': 'WestAsia-UNESCO'
     }
     
     const regionKey = countryRegionMap[country]
@@ -114,6 +156,9 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
         countryRegions = ['Costa Rica']
       } else if (country.includes('UNESCO')) {
         countryRegions = [regionKey]
+      } else {
+        // Individual Asian countries - show their regional UNESCO group
+        countryRegions = [regionKey]
       }
       
       // Filter to show only this country - hide all others
@@ -125,6 +170,14 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
       })
       setRegionVisibility(newVisibleRegions)
     }
+  }
+  
+  // Helper function to check if a country has data
+  const hasCountryData = (country) => {
+    const parks = regions[Object.keys(regions).find(key => 
+      key.includes('UNESCO') || key === 'India-Parks' || key === 'Nepal-Parks' || key === 'Sri Lanka-Parks'
+    )] || []
+    return parks.some(park => park.Country === country)
   }
 
   // Close menu when clicking outside
@@ -325,55 +378,240 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                       </div>
                     </button>
                   ) : null}
+                  
+                  {/* South Asia Countries */}
                   {regions['SouthAsia-UNESCO'] && regions['SouthAsia-UNESCO'].length > 0 && (
-                    <button
-                      className="menu-country-item"
-                      onClick={() => handleCountryClick('South Asia UNESCO')}
-                    >
-                      <div className="country-info">
-                        <div className="country-name">🌏 South Asia UNESCO</div>
-                      </div>
-                    </button>
+                    <>
+                      {regions['SouthAsia-UNESCO'].some(p => p.Country === 'Bangladesh') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Bangladesh')}>
+                          <div className="country-info"><div className="country-name">🇧🇩 Bangladesh</div></div>
+                        </button>
+                      )}
+                      {regions['SouthAsia-UNESCO'].some(p => p.Country === 'Pakistan') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Pakistan')}>
+                          <div className="country-info"><div className="country-name">🇵🇰 Pakistan</div></div>
+                        </button>
+                      )}
+                      {regions['SouthAsia-UNESCO'].some(p => p.Country === 'Afghanistan') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Afghanistan')}>
+                          <div className="country-info"><div className="country-name">🇦🇫 Afghanistan</div></div>
+                        </button>
+                      )}
+                      {regions['SouthAsia-UNESCO'].some(p => p.Country === 'Bhutan') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Bhutan')}>
+                          <div className="country-info"><div className="country-name">🇧🇹 Bhutan</div></div>
+                        </button>
+                      )}
+                      {regions['SouthAsia-UNESCO'].some(p => p.Country === 'Maldives') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Maldives')}>
+                          <div className="country-info"><div className="country-name">🇲🇻 Maldives</div></div>
+                        </button>
+                      )}
+                    </>
                   )}
+                  
+                  {/* Southeast Asia Countries */}
                   {regions['SouthEastAsia-UNESCO'] && regions['SouthEastAsia-UNESCO'].length > 0 && (
-                    <button
-                      className="menu-country-item"
-                      onClick={() => handleCountryClick('South-eastern Asia UNESCO')}
-                    >
-                      <div className="country-info">
-                        <div className="country-name">🌏 South-eastern Asia UNESCO</div>
-                      </div>
-                    </button>
+                    <>
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Thailand') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Thailand')}>
+                          <div className="country-info"><div className="country-name">🇹🇭 Thailand</div></div>
+                        </button>
+                      )}
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Indonesia') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Indonesia')}>
+                          <div className="country-info"><div className="country-name">🇮🇩 Indonesia</div></div>
+                        </button>
+                      )}
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Vietnam') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Vietnam')}>
+                          <div className="country-info"><div className="country-name">🇻🇳 Vietnam</div></div>
+                        </button>
+                      )}
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Cambodia') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Cambodia')}>
+                          <div className="country-info"><div className="country-name">🇰🇭 Cambodia</div></div>
+                        </button>
+                      )}
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Myanmar') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Myanmar')}>
+                          <div className="country-info"><div className="country-name">🇲🇲 Myanmar</div></div>
+                        </button>
+                      )}
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Philippines') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Philippines')}>
+                          <div className="country-info"><div className="country-name">🇵🇭 Philippines</div></div>
+                        </button>
+                      )}
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Malaysia') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Malaysia')}>
+                          <div className="country-info"><div className="country-name">🇲🇾 Malaysia</div></div>
+                        </button>
+                      )}
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Singapore') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Singapore')}>
+                          <div className="country-info"><div className="country-name">🇸🇬 Singapore</div></div>
+                        </button>
+                      )}
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Laos') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Laos')}>
+                          <div className="country-info"><div className="country-name">🇱🇦 Laos</div></div>
+                        </button>
+                      )}
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Brunei') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Brunei')}>
+                          <div className="country-info"><div className="country-name">🇧🇳 Brunei</div></div>
+                        </button>
+                      )}
+                      {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'East Timor') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('East Timor')}>
+                          <div className="country-info"><div className="country-name">🇹🇱 East Timor</div></div>
+                        </button>
+                      )}
+                    </>
                   )}
+                  
+                  {/* East Asia Countries */}
                   {regions['EastAsia-UNESCO'] && regions['EastAsia-UNESCO'].length > 0 && (
-                    <button
-                      className="menu-country-item"
-                      onClick={() => handleCountryClick('Eastern Asia UNESCO')}
-                    >
-                      <div className="country-info">
-                        <div className="country-name">🌏 Eastern Asia UNESCO</div>
-                      </div>
-                    </button>
+                    <>
+                      {regions['EastAsia-UNESCO'].some(p => p.Country === 'China') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('China')}>
+                          <div className="country-info"><div className="country-name">🇨🇳 China</div></div>
+                        </button>
+                      )}
+                      {regions['EastAsia-UNESCO'].some(p => p.Country === 'Japan') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Japan')}>
+                          <div className="country-info"><div className="country-name">🇯🇵 Japan</div></div>
+                        </button>
+                      )}
+                      {regions['EastAsia-UNESCO'].some(p => p.Country === 'South Korea') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('South Korea')}>
+                          <div className="country-info"><div className="country-name">🇰🇷 South Korea</div></div>
+                        </button>
+                      )}
+                      {regions['EastAsia-UNESCO'].some(p => p.Country === 'North Korea') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('North Korea')}>
+                          <div className="country-info"><div className="country-name">🇰🇵 North Korea</div></div>
+                        </button>
+                      )}
+                      {regions['EastAsia-UNESCO'].some(p => p.Country === 'Mongolia') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Mongolia')}>
+                          <div className="country-info"><div className="country-name">🇲🇳 Mongolia</div></div>
+                        </button>
+                      )}
+                    </>
                   )}
+                  
+                  {/* Central Asia Countries */}
                   {regions['CentralAsia-UNESCO'] && regions['CentralAsia-UNESCO'].length > 0 && (
-                    <button
-                      className="menu-country-item"
-                      onClick={() => handleCountryClick('Central Asia UNESCO')}
-                    >
-                      <div className="country-info">
-                        <div className="country-name">🌏 Central Asia UNESCO</div>
-                      </div>
-                    </button>
+                    <>
+                      {regions['CentralAsia-UNESCO'].some(p => p.Country === 'Kazakhstan') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Kazakhstan')}>
+                          <div className="country-info"><div className="country-name">🇰🇿 Kazakhstan</div></div>
+                        </button>
+                      )}
+                      {regions['CentralAsia-UNESCO'].some(p => p.Country === 'Kyrgyzstan') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Kyrgyzstan')}>
+                          <div className="country-info"><div className="country-name">🇰🇬 Kyrgyzstan</div></div>
+                        </button>
+                      )}
+                      {regions['CentralAsia-UNESCO'].some(p => p.Country === 'Tajikistan') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Tajikistan')}>
+                          <div className="country-info"><div className="country-name">🇹🇯 Tajikistan</div></div>
+                        </button>
+                      )}
+                      {regions['CentralAsia-UNESCO'].some(p => p.Country === 'Turkmenistan') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Turkmenistan')}>
+                          <div className="country-info"><div className="country-name">🇹🇲 Turkmenistan</div></div>
+                        </button>
+                      )}
+                      {regions['CentralAsia-UNESCO'].some(p => p.Country === 'Uzbekistan') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Uzbekistan')}>
+                          <div className="country-info"><div className="country-name">🇺🇿 Uzbekistan</div></div>
+                        </button>
+                      )}
+                    </>
                   )}
+                  
+                  {/* West Asia / Middle East Countries */}
                   {regions['WestAsia-UNESCO'] && regions['WestAsia-UNESCO'].length > 0 && (
-                    <button
-                      className="menu-country-item"
-                      onClick={() => handleCountryClick('Western Asia UNESCO')}
-                    >
-                      <div className="country-info">
-                        <div className="country-name">🌏 Western Asia UNESCO</div>
-                      </div>
-                    </button>
+                    <>
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Iran') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Iran')}>
+                          <div className="country-info"><div className="country-name">🇮🇷 Iran</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Iraq') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Iraq')}>
+                          <div className="country-info"><div className="country-name">🇮🇶 Iraq</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Jordan') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Jordan')}>
+                          <div className="country-info"><div className="country-name">🇯🇴 Jordan</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Lebanon') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Lebanon')}>
+                          <div className="country-info"><div className="country-name">🇱🇧 Lebanon</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Saudi Arabia') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Saudi Arabia')}>
+                          <div className="country-info"><div className="country-name">🇸🇦 Saudi Arabia</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Syria') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Syria')}>
+                          <div className="country-info"><div className="country-name">🇸🇾 Syria</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Turkey') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Turkey')}>
+                          <div className="country-info"><div className="country-name">🇹🇷 Turkey</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'UAE' || p.Country === 'United Arab Emirates') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('UAE')}>
+                          <div className="country-info"><div className="country-name">🇦🇪 UAE</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Yemen') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Yemen')}>
+                          <div className="country-info"><div className="country-name">🇾🇪 Yemen</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Oman') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Oman')}>
+                          <div className="country-info"><div className="country-name">🇴🇲 Oman</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Qatar') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Qatar')}>
+                          <div className="country-info"><div className="country-name">🇶🇦 Qatar</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Kuwait') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Kuwait')}>
+                          <div className="country-info"><div className="country-name">🇰🇼 Kuwait</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Bahrain') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Bahrain')}>
+                          <div className="country-info"><div className="country-name">🇧🇭 Bahrain</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Israel') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Israel')}>
+                          <div className="country-info"><div className="country-name">🇮🇱 Israel</div></div>
+                        </button>
+                      )}
+                      {regions['WestAsia-UNESCO'].some(p => p.Country === 'Palestine') && (
+                        <button className="menu-country-item" onClick={() => handleCountryClick('Palestine')}>
+                          <div className="country-info"><div className="country-name">🇵🇸 Palestine</div></div>
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               )}
