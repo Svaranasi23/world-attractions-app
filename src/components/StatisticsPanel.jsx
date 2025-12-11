@@ -13,7 +13,7 @@ const getRegionCountries = (regionKey) => {
     'India-Jyotirlinga': ['India'],
     'India-ShaktiPeetha': ['India', 'Sri Lanka'],
     'India-OtherTemples': ['India'],
-    'India-Mutts': ['India'],
+    'India-Matham': ['India'],
     'India-DivyaDesam': ['India'],
     'India-Forts': ['India'],
     'Nepal-Parks': ['Nepal'],
@@ -243,7 +243,7 @@ function StatisticsPanel({ parks, regions, activeTab, setActiveTab }) {
                                  (regions['India-Jyotirlinga']?.length || 0) + 
                                  (regions['India-ShaktiPeetha']?.length || 0) + 
                                  (regions['India-OtherTemples']?.length || 0) + 
-                                 (regions['India-Mutts']?.length || 0) + 
+                                 (regions['India-Matham']?.length || 0) + 
                                  (regions['India-DivyaDesam']?.length || 0) + 
                                  (regions['India-Forts']?.length || 0)
 
@@ -467,7 +467,7 @@ function StatisticsPanel({ parks, regions, activeTab, setActiveTab }) {
                 <li>🔱 Jyotirlinga Temples: {regions['India-Jyotirlinga']?.length || 0}</li>
                 <li>🌸 Shakti Peethas: {regions['India-ShaktiPeetha']?.length || 0}</li>
                 <li>🕉️ Major Temples: {regions['India-OtherTemples']?.length || 0}</li>
-                <li>🏛️ Maths: {regions['India-Mutts']?.length || 0}</li>
+                <li>🏛️ Matham: {regions['India-Matham']?.length || 0}</li>
                 <li>🐚 Divya Desams: {regions['India-DivyaDesam']?.length || 0}</li>
                 <li>🏰 Historic Forts: {regions['India-Forts']?.length || 0}</li>
               </ul>

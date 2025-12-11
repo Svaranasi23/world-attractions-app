@@ -6,6 +6,7 @@ import 'leaflet.heat'
 import { loadParksData, loadAirportsData, findNearbyAirports, findNearbyParks, categorizeParksByRegion, calculateDistance } from '../services/dataService'
 import TabPanel from '../components/TabPanel'
 import MapController from '../components/MapController'
+import MapViewTracker from '../components/MapViewTracker'
 import AttractionTypeFilter from '../components/AttractionTypeFilter'
 import AttractionSearch from '../components/AttractionSearch'
 import MapLegend from '../components/MapLegend'
@@ -188,7 +189,7 @@ function MapView() {
     'India-Jyotirlinga': true,
     'India-ShaktiPeetha': true,
     'India-OtherTemples': true,
-    'India-Mutts': true,
+    'India-Matham': true,
     'India-DivyaDesam': true,
     'India-Forts': true,
     'Nepal-Parks': true,
@@ -211,6 +212,7 @@ function MapView() {
   const [activeTab, setActiveTab] = useState('stats')
   const [mapFocus, setMapFocus] = useState(null)
   const mapRef = useRef(null)
+  const [currentMapView, setCurrentMapView] = useState(null)
   const [filterPanelOpen, setFilterPanelOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedParkForPopup, setSelectedParkForPopup] = useState(null)
@@ -222,7 +224,7 @@ function MapView() {
     Temples: true,
     Jyotirlinga: true,
     ShaktiPeetha: true,
-    Mutts: true,
+    Matham: true,
     DivyaDesam: true,
     Forts: true,
     TrekkingFlights: true,
@@ -314,8 +316,8 @@ function MapView() {
           region = 'India-ShaktiPeetha'
         } else if (park.IndiaCategory === 'OtherTemples') {
           region = 'India-OtherTemples'
-        } else if (park.IndiaCategory === 'Mutts') {
-          region = 'India-Mutts'
+        } else if (park.IndiaCategory === 'Matham') {
+          region = 'India-Matham'
         } else if (park.IndiaCategory === 'DivyaDesam') {
           region = 'India-DivyaDesam'
         } else if (park.IndiaCategory === 'Forts') {
@@ -398,8 +400,8 @@ function MapView() {
         availableTypes.add('Jyotirlinga')
       } else if (park.IndiaCategory === 'ShaktiPeetha') {
         availableTypes.add('ShaktiPeetha')
-      } else if (park.IndiaCategory === 'Mutts') {
-        availableTypes.add('Mutts')
+      } else if (park.IndiaCategory === 'Matham') {
+        availableTypes.add('Matham')
       } else if (park.IndiaCategory === 'DivyaDesam') {
         availableTypes.add('DivyaDesam')
       } else if (park.IndiaCategory === 'Forts') {
@@ -422,36 +424,170 @@ function MapView() {
       }
     })
     
-    // If all regions are visible (World Attractions view), show all types
+    // Check if map is showing the whole world (low zoom level)
+    const isWorldView = !currentMapView || !currentMapView.zoom || currentMapView.zoom <= 3
+    
+    // Check if map is zoomed into India, Nepal, or Sri Lanka based on center and zoom
+    // Only consider it zoomed in if zoom is high enough AND center is within country bounds
+    const isMapZoomedIntoIndia = currentMapView && 
+                                 currentMapView.center && 
+                                 currentMapView.zoom >= 4 &&
+                                 !isWorldView &&
+                                 currentMapView.center.lat >= 6.0 && currentMapView.center.lat <= 37.0 &&
+                                 currentMapView.center.lng >= 68.0 && currentMapView.center.lng <= 97.0
+    
+    const isMapZoomedIntoNepal = currentMapView && 
+                                 currentMapView.center && 
+                                 currentMapView.zoom >= 5 &&
+                                 !isWorldView &&
+                                 currentMapView.center.lat >= 26.0 && currentMapView.center.lat <= 31.0 &&
+                                 currentMapView.center.lng >= 80.0 && currentMapView.center.lng <= 89.0
+    
+    const isMapZoomedIntoSriLanka = currentMapView && 
+                                    currentMapView.center && 
+                                    currentMapView.zoom >= 5 &&
+                                    !isWorldView &&
+                                    currentMapView.center.lat >= 5.5 && currentMapView.center.lat <= 10.0 &&
+                                    currentMapView.center.lng >= 79.0 && currentMapView.center.lng <= 82.0
+    
+    // Also check regions object to ensure types are available if regions are visible and have data
+    // This ensures Forts, DivyaDesam, and Matham show up even if no parks are currently visible
+    // Add Matham and DivyaDesam if their regions are visible OR if map is zoomed into India
+    // In world view, add them if any India region is visible so they can be grouped under Temples
+    if (regions['India-Matham'] && regions['India-Matham'].length > 0) {
+      if (visibleRegions['India-Matham'] === true || isMapZoomedIntoIndia || 
+          (isWorldView && (visibleRegions['India-Parks'] === true || visibleRegions['India-UNESCO'] === true || 
+           visibleRegions['India-Jyotirlinga'] === true || visibleRegions['India-ShaktiPeetha'] === true ||
+           visibleRegions['India-OtherTemples'] === true || visibleRegions['India-Forts'] === true))) {
+        availableTypes.add('Matham')
+      }
+    }
+    if (regions['India-DivyaDesam'] && regions['India-DivyaDesam'].length > 0) {
+      if (visibleRegions['India-DivyaDesam'] === true || isMapZoomedIntoIndia ||
+          (isWorldView && (visibleRegions['India-Parks'] === true || visibleRegions['India-UNESCO'] === true || 
+           visibleRegions['India-Jyotirlinga'] === true || visibleRegions['India-ShaktiPeetha'] === true ||
+           visibleRegions['India-OtherTemples'] === true || visibleRegions['India-Forts'] === true))) {
+        availableTypes.add('DivyaDesam')
+      }
+    }
+    if (visibleRegions['India-Forts'] === true && regions['India-Forts'] && regions['India-Forts'].length > 0) {
+      availableTypes.add('Forts')
+    }
+    if (visibleRegions['India-Jyotirlinga'] === true && regions['India-Jyotirlinga'] && regions['India-Jyotirlinga'].length > 0) {
+      availableTypes.add('Jyotirlinga')
+    }
+    if (visibleRegions['India-ShaktiPeetha'] === true && regions['India-ShaktiPeetha'] && regions['India-ShaktiPeetha'].length > 0) {
+      availableTypes.add('ShaktiPeetha')
+    }
+    if (visibleRegions['India-OtherTemples'] === true && regions['India-OtherTemples'] && regions['India-OtherTemples'].length > 0) {
+      availableTypes.add('Temples')
+    }
+    
+    // Check if Nepal or Sri Lanka temple regions are visible
+    if (visibleRegions['Nepal-Temples'] === true && regions['Nepal-Temples'] && regions['Nepal-Temples'].length > 0) {
+      availableTypes.add('Temples')
+    }
+    if (visibleRegions['Sri Lanka-Temples'] === true && regions['Sri Lanka-Temples'] && regions['Sri Lanka-Temples'].length > 0) {
+      availableTypes.add('Temples')
+    }
+    
+    // Check if airports are available
+    const hasAirports = airports && airports.length > 0
+    
+    // Determine if we're in a country-focused view (India, Nepal, or Sri Lanka)
+    // Check both visible regions AND map zoom/center
+    const indiaRegionsVisible = visibleRegions['India-Parks'] === true || 
+                                visibleRegions['India-UNESCO'] === true || 
+                                visibleRegions['India-Jyotirlinga'] === true || 
+                                visibleRegions['India-ShaktiPeetha'] === true || 
+                                visibleRegions['India-OtherTemples'] === true || 
+                                visibleRegions['India-Matham'] === true || 
+                                visibleRegions['India-DivyaDesam'] === true || 
+                                visibleRegions['India-Forts'] === true
+    
+    const nepalRegionsVisible = visibleRegions['Nepal-Parks'] === true || 
+                               visibleRegions['Nepal-Temples'] === true || 
+                               visibleRegions['Nepal-UNESCO'] === true || 
+                               visibleRegions['Nepal-TrekkingFlights'] === true
+    
+    const sriLankaRegionsVisible = visibleRegions['Sri Lanka-Parks'] === true || 
+                                  visibleRegions['Sri Lanka-Temples'] === true || 
+                                  visibleRegions['Sri Lanka-UNESCO'] === true
+    
+    // Only consider it a country-focused view if:
+    // 1. Map is actually zoomed into the country (not world view), OR
+    // 2. Only that country's regions are visible (not all regions)
+    const isCountryFocusedByZoom = isMapZoomedIntoIndia || isMapZoomedIntoNepal || isMapZoomedIntoSriLanka
+    
     const allRegionsVisible = Object.values(visibleRegions).every(value => value === true)
-    if (allRegionsVisible) {
+    const isCountryFocusedByRegions = !allRegionsVisible && (indiaRegionsVisible || nepalRegionsVisible || sriLankaRegionsVisible)
+    
+    // If showing world view (low zoom), always group temple types regardless of region visibility
+    // Otherwise, check if we're focused on a country
+    const isCountryFocusedView = isWorldView ? false : (isCountryFocusedByZoom || isCountryFocusedByRegions)
+    
+    // If showing world view (low zoom) OR all regions visible and not zoomed into a country, group temple types under "Temples"
+    if (isWorldView || (allRegionsVisible && !isCountryFocusedByZoom)) {
+      // In general view, group all temple types under "Temples"
+      const hasAnyTempleType = availableTypes.has('Temples') || 
+                               availableTypes.has('Jyotirlinga') || 
+                               availableTypes.has('ShaktiPeetha') || 
+                               availableTypes.has('Matham') || 
+                               availableTypes.has('DivyaDesam')
+      
       return {
         NationalParks: true,
         UNESCO: true,
-        Temples: true,
-        Jyotirlinga: true,
-        ShaktiPeetha: true,
-        Mutts: true,
-        DivyaDesam: true,
-        Forts: true,
-        TrekkingFlights: true,
-        MostPhotographed: true
+        Temples: hasAnyTempleType,
+        Jyotirlinga: false, // Grouped under Temples
+        ShaktiPeetha: false, // Grouped under Temples
+        Matham: false, // Grouped under Temples
+        DivyaDesam: false, // Grouped under Temples
+        Forts: availableTypes.has('Forts'),
+        TrekkingFlights: availableTypes.has('TrekkingFlights'),
+        MostPhotographed: availableTypes.has('MostPhotographed'),
+        Airports: hasAirports
       }
     }
+    
+    // In country-focused view (either by region selection or map zoom), show temple types separately
+    if (isCountryFocusedView) {
+      return {
+        NationalParks: availableTypes.has('NationalParks'),
+        UNESCO: availableTypes.has('UNESCO'),
+        Temples: availableTypes.has('Temples'),
+        Jyotirlinga: availableTypes.has('Jyotirlinga'),
+        ShaktiPeetha: availableTypes.has('ShaktiPeetha'),
+        Matham: availableTypes.has('Matham'),
+        DivyaDesam: availableTypes.has('DivyaDesam'),
+        Forts: availableTypes.has('Forts'),
+        TrekkingFlights: availableTypes.has('TrekkingFlights'),
+        MostPhotographed: availableTypes.has('MostPhotographed'),
+        Airports: hasAirports
+      }
+    }
+    
+    // In general view (not country-focused), group temple types under "Temples"
+    const hasAnyTempleType = availableTypes.has('Temples') || 
+                             availableTypes.has('Jyotirlinga') || 
+                             availableTypes.has('ShaktiPeetha') || 
+                             availableTypes.has('Matham') || 
+                             availableTypes.has('DivyaDesam')
     
     return {
       NationalParks: availableTypes.has('NationalParks'),
       UNESCO: availableTypes.has('UNESCO'),
-      Temples: availableTypes.has('Temples'),
-      Jyotirlinga: availableTypes.has('Jyotirlinga'),
-      ShaktiPeetha: availableTypes.has('ShaktiPeetha'),
-      Mutts: availableTypes.has('Mutts'),
-      DivyaDesam: availableTypes.has('DivyaDesam'),
+      Temples: hasAnyTempleType,
+      Jyotirlinga: false, // Grouped under Temples
+      ShaktiPeetha: false, // Grouped under Temples
+      Matham: false, // Grouped under Temples
+      DivyaDesam: false, // Grouped under Temples
       Forts: availableTypes.has('Forts'),
       TrekkingFlights: availableTypes.has('TrekkingFlights'),
-      MostPhotographed: availableTypes.has('MostPhotographed')
+      MostPhotographed: availableTypes.has('MostPhotographed'),
+      Airports: hasAirports
     }
-  }, [parks, visibleRegions])
+  }, [parks, visibleRegions, regions, airports, currentMapView])
 
   const heatMapData = useMemo(() => {
     return parks
@@ -513,8 +649,8 @@ function MapView() {
           region = 'India-ShaktiPeetha'
         } else if (park.IndiaCategory === 'OtherTemples') {
           region = 'India-OtherTemples'
-        } else if (park.IndiaCategory === 'Mutts') {
-          region = 'India-Mutts'
+        } else if (park.IndiaCategory === 'Matham') {
+          region = 'India-Matham'
         } else if (park.IndiaCategory === 'DivyaDesam') {
           region = 'India-DivyaDesam'
         } else if (park.IndiaCategory === 'Forts') {
@@ -667,13 +803,54 @@ function MapView() {
       let attractionType = null
       const country = park.Country || 'United States'
       
+      // Check if map is zoomed into India, Nepal, or Sri Lanka
+      const isMapZoomedIntoIndia = currentMapView && 
+                                   currentMapView.center && 
+                                   currentMapView.zoom >= 4 &&
+                                   currentMapView.center.lat >= 6.0 && currentMapView.center.lat <= 37.0 &&
+                                   currentMapView.center.lng >= 68.0 && currentMapView.center.lng <= 97.0
+      
+      const isMapZoomedIntoNepal = currentMapView && 
+                                   currentMapView.center && 
+                                   currentMapView.zoom >= 5 &&
+                                   currentMapView.center.lat >= 26.0 && currentMapView.center.lat <= 31.0 &&
+                                   currentMapView.center.lng >= 80.0 && currentMapView.center.lng <= 89.0
+      
+      const isMapZoomedIntoSriLanka = currentMapView && 
+                                      currentMapView.center && 
+                                      currentMapView.zoom >= 5 &&
+                                      currentMapView.center.lat >= 5.5 && currentMapView.center.lat <= 10.0 &&
+                                      currentMapView.center.lng >= 79.0 && currentMapView.center.lng <= 82.0
+      
+      // Determine if we're in a country-focused view
+      const indiaRegionsVisible = visibleRegions['India-Parks'] === true || 
+                                  visibleRegions['India-UNESCO'] === true || 
+                                  visibleRegions['India-Jyotirlinga'] === true || 
+                                  visibleRegions['India-ShaktiPeetha'] === true || 
+                                  visibleRegions['India-OtherTemples'] === true || 
+                                  visibleRegions['India-Matham'] === true || 
+                                  visibleRegions['India-DivyaDesam'] === true || 
+                                  visibleRegions['India-Forts'] === true
+      
+      const nepalRegionsVisible = visibleRegions['Nepal-Parks'] === true || 
+                                 visibleRegions['Nepal-Temples'] === true || 
+                                 visibleRegions['Nepal-UNESCO'] === true || 
+                                 visibleRegions['Nepal-TrekkingFlights'] === true
+      
+      const sriLankaRegionsVisible = visibleRegions['Sri Lanka-Parks'] === true || 
+                                    visibleRegions['Sri Lanka-Temples'] === true || 
+                                    visibleRegions['Sri Lanka-UNESCO'] === true
+      
+      const isCountryFocusedView = indiaRegionsVisible || nepalRegionsVisible || sriLankaRegionsVisible ||
+                                   isMapZoomedIntoIndia || isMapZoomedIntoNepal || isMapZoomedIntoSriLanka
+      
       // Determine attraction type
       if (park.IndiaCategory === 'Jyotirlinga') {
         attractionType = 'Jyotirlinga'
       } else if (park.IndiaCategory === 'ShaktiPeetha') {
         attractionType = 'ShaktiPeetha'
-      } else if (park.IndiaCategory === 'Mutts') {
-        attractionType = 'Mutts'
+      } else if (park.IndiaCategory === 'Matham') {
+        attractionType = 'Matham'
       } else if (park.IndiaCategory === 'DivyaDesam') {
         attractionType = 'DivyaDesam'
       } else if (park.IndiaCategory === 'Forts') {
@@ -718,8 +895,20 @@ function MapView() {
       } else {
         // Not most photographed: check the regular attraction type filter
         // If attractionType is null (non-national parks that aren't most photographed), show them by default
-        if (attractionType && !visibleAttractionTypes[attractionType]) {
-          return false
+        if (attractionType) {
+          // In general view (not country-focused), temple types are grouped under "Temples"
+          if (!isCountryFocusedView && (attractionType === 'Jyotirlinga' || attractionType === 'ShaktiPeetha' || 
+              attractionType === 'Matham' || attractionType === 'DivyaDesam')) {
+            // Check if "Temples" filter is on
+            if (!visibleAttractionTypes.Temples) {
+              return false
+            }
+          } else {
+            // In country-focused view or other types, check the specific type
+            if (!visibleAttractionTypes[attractionType]) {
+              return false
+            }
+          }
         }
       }
       
@@ -742,7 +931,7 @@ function MapView() {
              country.includes(query) ||
              states.includes(query)
     })
-  }, [parks, visibleRegions, visibleAttractionTypes, searchQuery])
+  }, [parks, visibleRegions, visibleAttractionTypes, searchQuery, currentMapView])
   
   // Debug logging
   useEffect(() => {
@@ -876,7 +1065,7 @@ function MapView() {
         'India-Jyotirlinga': { center: [20.5937, 78.9629], zoom: 5 },
         'India-ShaktiPeetha': { center: [20.5937, 78.9629], zoom: 5 },
         'India-OtherTemples': { center: [20.5937, 78.9629], zoom: 5 },
-        'India-Mutts': { center: [20.5937, 78.9629], zoom: 5 },
+        'India-Matham': { center: [20.5937, 78.9629], zoom: 5 },
         'India-DivyaDesam': { center: [20.5937, 78.9629], zoom: 5 },
         'India-Forts': { center: [20.5937, 78.9629], zoom: 5 },
         'Nepal': { center: [28.3949, 84.1240], zoom: 7 },
@@ -960,7 +1149,7 @@ function MapView() {
   }
 
   const toggleAllIndiaRegions = (show, shouldFocus = false) => {
-    const indiaRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Mutts', 'India-DivyaDesam', 'India-Forts']
+    const indiaRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Matham', 'India-DivyaDesam', 'India-Forts']
     setVisibleRegions(prev => {
       const updated = { ...prev }
       indiaRegions.forEach(region => {
@@ -975,7 +1164,7 @@ function MapView() {
   }
 
   const areAllIndiaRegionsVisible = () => {
-    const indiaRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Mutts', 'India-DivyaDesam', 'India-Forts']
+    const indiaRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Matham', 'India-DivyaDesam', 'India-Forts']
     return indiaRegions.every(region => visibleRegions[region] !== false)
   }
 
@@ -1291,8 +1480,8 @@ function MapView() {
     }
     
     // Check if it's a Math (Monastery)
-    const isMath = park.IndiaCategory === 'Mutts' || 
-                   (park.Designation && park.Designation.includes('Mutt'))
+    const isMath = park.IndiaCategory === 'Matham' || 
+                   (park.Designation && park.Designation.includes('Matham'))
     
     if (isMath) {
       // Use custom Math icon with monastery emoji (🏛️) - light red if most photographed, saffron otherwise
@@ -1543,10 +1732,64 @@ function MapView() {
   }
 
   const toggleAttractionType = (type) => {
-    setVisibleAttractionTypes(prev => ({
-      ...prev,
-      [type]: !prev[type]
-    }))
+    // Check if map is zoomed into India, Nepal, or Sri Lanka
+    const isMapZoomedIntoIndia = currentMapView && 
+                                 currentMapView.center && 
+                                 currentMapView.zoom >= 4 &&
+                                 currentMapView.center.lat >= 6.0 && currentMapView.center.lat <= 37.0 &&
+                                 currentMapView.center.lng >= 68.0 && currentMapView.center.lng <= 97.0
+    
+    const isMapZoomedIntoNepal = currentMapView && 
+                                 currentMapView.center && 
+                                 currentMapView.zoom >= 5 &&
+                                 currentMapView.center.lat >= 26.0 && currentMapView.center.lat <= 31.0 &&
+                                 currentMapView.center.lng >= 80.0 && currentMapView.center.lng <= 89.0
+    
+    const isMapZoomedIntoSriLanka = currentMapView && 
+                                    currentMapView.center && 
+                                    currentMapView.zoom >= 5 &&
+                                    currentMapView.center.lat >= 5.5 && currentMapView.center.lat <= 10.0 &&
+                                    currentMapView.center.lng >= 79.0 && currentMapView.center.lng <= 82.0
+    
+    // Determine if we're in a country-focused view
+    const indiaRegionsVisible = visibleRegions['India-Parks'] === true || 
+                                visibleRegions['India-UNESCO'] === true || 
+                                visibleRegions['India-Jyotirlinga'] === true || 
+                                visibleRegions['India-ShaktiPeetha'] === true || 
+                                visibleRegions['India-OtherTemples'] === true || 
+                                visibleRegions['India-Matham'] === true || 
+                                visibleRegions['India-DivyaDesam'] === true || 
+                                visibleRegions['India-Forts'] === true
+    
+    const nepalRegionsVisible = visibleRegions['Nepal-Parks'] === true || 
+                               visibleRegions['Nepal-Temples'] === true || 
+                               visibleRegions['Nepal-UNESCO'] === true || 
+                               visibleRegions['Nepal-TrekkingFlights'] === true
+    
+    const sriLankaRegionsVisible = visibleRegions['Sri Lanka-Parks'] === true || 
+                                  visibleRegions['Sri Lanka-Temples'] === true || 
+                                  visibleRegions['Sri Lanka-UNESCO'] === true
+    
+    const isCountryFocusedView = indiaRegionsVisible || nepalRegionsVisible || sriLankaRegionsVisible ||
+                                 isMapZoomedIntoIndia || isMapZoomedIntoNepal || isMapZoomedIntoSriLanka
+    
+    // In general view, when toggling "Temples", also toggle grouped temple types
+    if (type === 'Temples' && !isCountryFocusedView) {
+      const newValue = !visibleAttractionTypes[type]
+      setVisibleAttractionTypes(prev => ({
+        ...prev,
+        Temples: newValue,
+        Jyotirlinga: newValue,
+        ShaktiPeetha: newValue,
+        Matham: newValue,
+        DivyaDesam: newValue
+      }))
+    } else {
+      setVisibleAttractionTypes(prev => ({
+        ...prev,
+        [type]: !prev[type]
+      }))
+    }
   }
 
   const handleSearch = (query) => {
@@ -1576,7 +1819,7 @@ function MapView() {
         onSearch={handleSearch}
         onSelectAttraction={handleSelectAttraction}
       />
-      <MapLegend />
+      <MapLegend visibleRegions={visibleRegions} regions={regions} showAirports={showAirports} airports={airports} currentMapView={currentMapView} />
       <AttractionTypeFilter
         visibleTypes={visibleAttractionTypes}
         toggleType={toggleAttractionType}
@@ -1585,6 +1828,9 @@ function MapView() {
         availableTypes={availableAttractionTypes}
         showAirports={showAirports}
         setShowAirports={setShowAirports}
+        visibleRegions={visibleRegions}
+        regions={regions}
+        currentMapView={currentMapView}
       />
       <MapContainer
         center={[30.0, 0.0]}
@@ -1630,6 +1876,7 @@ function MapView() {
           selectedPark={selectedParkForPopup}
           onPopupOpened={() => setSelectedParkForPopup(null)}
         />
+        <MapViewTracker onViewChange={setCurrentMapView} />
         <TooltipZIndexFix />
         <PopupPositionRestore />
         

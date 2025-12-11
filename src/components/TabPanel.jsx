@@ -50,7 +50,7 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
       setRegionVisibility(newVisibleRegions)
     } else if (continent === 'Asia') {
       // Show only Asia regions, hide all others
-      const asiaRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Mutts', 'India-DivyaDesam', 'India-Forts',
+      const asiaRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Matham', 'India-DivyaDesam', 'India-Forts',
                            'Nepal-Parks', 'Nepal-Temples', 'Nepal-UNESCO', 'Nepal-TrekkingFlights',
                            'Sri Lanka-Parks', 'Sri Lanka-Temples', 'Sri Lanka-UNESCO',
                            'SouthEastAsia-UNESCO', 'EastAsia-UNESCO', 'SouthAsia-UNESCO', 'CentralAsia-UNESCO', 'WestAsia-UNESCO']
@@ -145,7 +145,7 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
       if (country === 'United States') {
         countryRegions = ['West', 'South', 'Midwest', 'Northeast', 'Alaska', 'Hawaii']
       } else if (country === 'India') {
-        countryRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Mutts', 'India-DivyaDesam', 'India-Forts']
+        countryRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Matham', 'India-DivyaDesam', 'India-Forts']
       } else if (country === 'Nepal') {
         countryRegions = ['Nepal-Parks', 'Nepal-Temples', 'Nepal-UNESCO', 'Nepal-TrekkingFlights']
       } else if (country === 'Sri Lanka') {

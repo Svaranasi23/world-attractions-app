@@ -87,7 +87,7 @@ const getRegionCountries = (regionKey) => {
     'India-Jyotirlinga': ['India'],
     'India-ShaktiPeetha': ['India', 'Sri Lanka'], // One Shakti Peetha is in Sri Lanka
     'India-OtherTemples': ['India'],
-    'India-Mutts': ['India'],
+    'India-Matham': ['India'],
     'India-DivyaDesam': ['India'],
     'India-Forts': ['India'],
     'Nepal-Parks': ['Nepal'],
@@ -124,8 +124,8 @@ function FilterPanel({ regions, visibleRegions, toggleRegion, toggleAllUSRegions
   const [sriLankaExpanded, setSriLankaExpanded] = useState(false)
   const [southAsiaExpanded, setSouthAsiaExpanded] = useState(false)
   
-  const indiaSubRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Mutts', 'India-DivyaDesam', 'India-Forts']
-  const totalIndiaParks = (regions['India-Parks']?.length || 0) + (regions['India-UNESCO']?.length || 0) + (regions['India-Jyotirlinga']?.length || 0) + (regions['India-ShaktiPeetha']?.length || 0) + (regions['India-OtherTemples']?.length || 0) + (regions['India-Mutts']?.length || 0) + (regions['India-DivyaDesam']?.length || 0) + (regions['India-Forts']?.length || 0)
+  const indiaSubRegions = ['India-Parks', 'India-UNESCO', 'India-Jyotirlinga', 'India-ShaktiPeetha', 'India-OtherTemples', 'India-Matham', 'India-DivyaDesam', 'India-Forts']
+  const totalIndiaParks = (regions['India-Parks']?.length || 0) + (regions['India-UNESCO']?.length || 0) + (regions['India-Jyotirlinga']?.length || 0) + (regions['India-ShaktiPeetha']?.length || 0) + (regions['India-OtherTemples']?.length || 0) + (regions['India-Matham']?.length || 0) + (regions['India-DivyaDesam']?.length || 0) + (regions['India-Forts']?.length || 0)
   const allIndiaVisible = areAllIndiaRegionsVisible()
   
   const nepalSubRegions = ['Nepal-Parks', 'Nepal-Temples', 'Nepal-UNESCO', 'Nepal-TrekkingFlights']
@@ -379,15 +379,15 @@ function FilterPanel({ regions, visibleRegions, toggleRegion, toggleAllUSRegions
                               <InfoTooltip countries={getRegionCountries('India-OtherTemples')} />
                             </label>
                           )}
-                          {regions['India-Mutts'] && (
-                            <label key="India-Mutts" className="filter-item nested-item">
+                          {regions['India-Matham'] && (
+                            <label key="India-Matham" className="filter-item nested-item">
                               <input
                                 type="checkbox"
-                                checked={visibleRegions['India-Mutts'] !== false}
-                                onChange={(e) => handleRegionToggle('India-Mutts', e.target.checked)}
+                                checked={visibleRegions['India-Matham'] !== false}
+                                onChange={(e) => handleRegionToggle('India-Matham', e.target.checked)}
                               />
-                              <span>🏛️ Maths</span> ({regions['India-Mutts'].length} maths)
-                              <InfoTooltip countries={getRegionCountries('India-Mutts')} />
+                              <span>🏛️ Matham</span> ({regions['India-Matham'].length} matham)
+                              <InfoTooltip countries={getRegionCountries('India-Matham')} />
                             </label>
                           )}
                           {regions['India-DivyaDesam'] && (

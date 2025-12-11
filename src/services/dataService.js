@@ -34,7 +34,7 @@ export const loadCSVData = async (filename) => {
  */
 export const loadParksData = async () => {
   try {
-    const [usParks, usMostPhotographed, canadianParks, canadianMostPhotographed, indianParks, indianUnescoSites, indianJyotirlinga, indianShaktiPeethas, indianOtherTemples, indianMutts, indianDivyaDesams, indianForts, nepalParks, nepalTemples, nepalUnescoSites, nepalTrekkingFlights, sriLankaParks, sriLankaTemples, sriLankaUnescoSites, costaRicaParks, costaRicaUnescoSites, chinaUnescoSites, japanUnescoSites, southKoreaUnescoSites, northKoreaUnescoSites, mongoliaUnescoSites, thailandUnescoSites, indonesiaUnescoSites, vietnamUnescoSites, cambodiaUnescoSites, myanmarUnescoSites, philippinesUnescoSites, malaysiaUnescoSites, singaporeUnescoSites, laosUnescoSites, bruneiUnescoSites, eastTimorUnescoSites, bangladeshUnescoSites, pakistanUnescoSites, afghanistanUnescoSites, bhutanUnescoSites, maldivesUnescoSites, kazakhstanUnescoSites, kyrgyzstanUnescoSites, tajikistanUnescoSites, turkmenistanUnescoSites, uzbekistanUnescoSites, iranUnescoSites, iraqUnescoSites, jordanUnescoSites, lebanonUnescoSites, saudiArabiaUnescoSites, syriaUnescoSites, turkeyUnescoSites, uaeUnescoSites, yemenUnescoSites, omanUnescoSites, qatarUnescoSites, kuwaitUnescoSites, bahrainUnescoSites, israelUnescoSites, palestineUnescoSites, belizeUnescoSites, guatemalaUnescoSites, hondurasUnescoSites, elSalvadorUnescoSites, nicaraguaUnescoSites, panamaUnescoSites, mexicoUnescoSites, usUnescoSites, canadaUnescoSites, asiaMostPhotographed] = await Promise.all([
+    const [usParks, usMostPhotographed, canadianParks, canadianMostPhotographed, indianParks, indianUnescoSites, indianJyotirlinga, indianShaktiPeethas, indianOtherTemples, indianMatham, indianDivyaDesams, indianForts, nepalParks, nepalTemples, nepalUnescoSites, nepalTrekkingFlights, sriLankaParks, sriLankaTemples, sriLankaUnescoSites, costaRicaParks, costaRicaUnescoSites, chinaUnescoSites, japanUnescoSites, southKoreaUnescoSites, northKoreaUnescoSites, mongoliaUnescoSites, thailandUnescoSites, indonesiaUnescoSites, vietnamUnescoSites, cambodiaUnescoSites, myanmarUnescoSites, philippinesUnescoSites, malaysiaUnescoSites, singaporeUnescoSites, laosUnescoSites, bruneiUnescoSites, eastTimorUnescoSites, bangladeshUnescoSites, pakistanUnescoSites, afghanistanUnescoSites, bhutanUnescoSites, maldivesUnescoSites, kazakhstanUnescoSites, kyrgyzstanUnescoSites, tajikistanUnescoSites, turkmenistanUnescoSites, uzbekistanUnescoSites, iranUnescoSites, iraqUnescoSites, jordanUnescoSites, lebanonUnescoSites, saudiArabiaUnescoSites, syriaUnescoSites, turkeyUnescoSites, uaeUnescoSites, yemenUnescoSites, omanUnescoSites, qatarUnescoSites, kuwaitUnescoSites, bahrainUnescoSites, israelUnescoSites, palestineUnescoSites, belizeUnescoSites, guatemalaUnescoSites, hondurasUnescoSites, elSalvadorUnescoSites, nicaraguaUnescoSites, panamaUnescoSites, mexicoUnescoSites, usUnescoSites, canadaUnescoSites, asiaMostPhotographed] = await Promise.all([
       loadCSVData('US_National_Parks.csv'),
       loadCSVData('US_Most_Photographed_Places.csv').catch(() => []),
       loadCSVData('Canadian_National_Parks.csv').catch(() => []),
@@ -44,7 +44,7 @@ export const loadParksData = async () => {
       loadCSVData('India_Jyotirlinga_Temples.csv').catch(() => []),
       loadCSVData('India_Shakti_Peethas.csv').catch(() => []),
       loadCSVData('India_Other_Temples.csv').catch(() => []),
-      loadCSVData('India_Mutts.csv').catch(() => []),
+      loadCSVData('India_Matham.csv').catch(() => []),
       loadCSVData('India_Divya_Desams.csv').catch(() => []),
       loadCSVData('India_Forts.csv').catch(() => []),
       loadCSVData('Nepal_National_Parks.csv').catch(() => []),
@@ -649,28 +649,28 @@ export const loadParksData = async () => {
     const processedUSUnesco = processUnescoSites(usUnescoSites, 'United States', 'us')
     const processedCanadaUnesco = processUnescoSites(canadaUnescoSites, 'Canada', 'ca')
     
-    // Process Indian Mutts
-    const processedIndianMutts = indianMutts
-      .filter(mutt => {
-        // Filter out mutts with empty names or invalid coordinates
-        const name = mutt.Name || ''
-        const lat = parseFloat(mutt.Latitude || '0')
-        const lon = parseFloat(mutt.Longitude || '0')
+    // Process Indian Matham
+    const processedIndianMatham = indianMatham
+      .filter(matham => {
+        // Filter out matham with empty names or invalid coordinates
+        const name = matham.Name || ''
+        const lat = parseFloat(matham.Latitude || '0')
+        const lon = parseFloat(matham.Longitude || '0')
         return name.trim() !== '' && !isNaN(lat) && !isNaN(lon) && lat !== 0 && lon !== 0
       })
-      .map(mutt => ({
-        Park_Code: mutt.Park_Code || '',
-        Name: mutt.Name || '',
-        Designation: mutt.Designation || 'Mutt',
-        States: mutt.States || '',
-        Latitude: mutt.Latitude || '0',
-        Longitude: mutt.Longitude || '0',
-        Description: mutt.Description || `Mutt in ${mutt.States || ''}`,
-        URL: mutt.URL || '',
+      .map(matham => ({
+        Park_Code: matham.Park_Code || '',
+        Name: matham.Name || '',
+        Designation: matham.Designation || 'Matham',
+        States: matham.States || '',
+        Latitude: matham.Latitude || '0',
+        Longitude: matham.Longitude || '0',
+        Description: matham.Description || `Matham in ${matham.States || ''}`,
+        URL: matham.URL || '',
         Country: 'India',
-        IndiaCategory: 'Mutts', // Categorize as Mutts for filtering
-        Mutt_Category: mutt.Mutt_Category || '',
-        id: `in-mutt-${mutt.Park_Code || Math.random()}`
+        IndiaCategory: 'Matham', // Categorize as Matham for filtering
+        Matham_Category: matham.Matham_Category || '',
+        id: `in-matham-${matham.Park_Code || Math.random()}`
       }))
     
     // Process Indian Divya Desams
@@ -723,7 +723,7 @@ export const loadParksData = async () => {
     
     return [
       ...processedUSParks, ...processedUSMostPhotographed, ...processedCanadianParks, ...processedCanadianMostPhotographed, ...processedAsiaMostPhotographed, 
-      ...processedIndianParks, ...processedIndianUnesco, ...processedIndianJyotirlinga, ...processedIndianShaktiPeethas, ...processedIndianOtherTemples, ...processedIndianMutts, ...processedIndianDivyaDesams, ...processedIndianForts, 
+      ...processedIndianParks, ...processedIndianUnesco, ...processedIndianJyotirlinga, ...processedIndianShaktiPeethas, ...processedIndianOtherTemples, ...processedIndianMatham, ...processedIndianDivyaDesams, ...processedIndianForts, 
       ...processedNepalParks, ...processedNepalTemples, ...processedNepalUnesco, ...processedNepalTrekkingFlights, 
       ...processedSriLankaParks, ...processedSriLankaTemples, ...processedSriLankaUnesco, 
       ...processedCostaRicaParks, ...processedCostaRicaUnesco, 
@@ -868,7 +868,7 @@ export const categorizeParksByRegion = (parks) => {
     'India-Jyotirlinga': [],
     'India-ShaktiPeetha': [],
     'India-OtherTemples': [],
-    'India-Mutts': [],
+    'India-Matham': [],
     'India-DivyaDesam': [],
     'India-Forts': [],
     'Nepal-Parks': [],
@@ -898,7 +898,7 @@ export const categorizeParksByRegion = (parks) => {
     } else if (country === 'Canada') {
       regions.Canada.push(park)
     } else if (country === 'India') {
-      // Separate India parks, UNESCO sites, Jyotirlinga temples, Shakti Peethas, Major Temples, Mutts, Divya Desams, and Forts
+      // Separate India parks, UNESCO sites, Jyotirlinga temples, Shakti Peethas, Major Temples, Matham, Divya Desams, and Forts
       if (park.IndiaCategory === 'UNESCO') {
         regions['India-UNESCO'].push(park)
       } else if (park.IndiaCategory === 'Jyotirlinga') {
@@ -907,8 +907,8 @@ export const categorizeParksByRegion = (parks) => {
         regions['India-ShaktiPeetha'].push(park)
       } else if (park.IndiaCategory === 'OtherTemples') {
         regions['India-OtherTemples'].push(park)
-      } else if (park.IndiaCategory === 'Mutts') {
-        regions['India-Mutts'].push(park)
+      } else if (park.IndiaCategory === 'Matham') {
+        regions['India-Matham'].push(park)
       } else if (park.IndiaCategory === 'DivyaDesam') {
         regions['India-DivyaDesam'].push(park)
       } else if (park.IndiaCategory === 'Forts') {

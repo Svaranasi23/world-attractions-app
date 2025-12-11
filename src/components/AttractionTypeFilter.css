@@ -73,10 +73,11 @@ body.menu-open .filter-icon-button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
+  padding: 14px 20px;
   background: linear-gradient(135deg, #0078d4 0%, #106ebe 100%);
   color: white;
   border-bottom: none;
+  flex-shrink: 0;
 }
 
 .filter-panel-header h3 {
@@ -117,9 +118,10 @@ body.menu-open .filter-icon-button {
 }
 
 .filter-actions {
-  padding: 12px 20px;
+  padding: 10px 20px;
   border-bottom: 1px solid #e1e1e1;
   background: #faf9f8;
+  flex-shrink: 0;
 }
 
 .toggle-all-button {
@@ -150,17 +152,18 @@ body.menu-open .filter-icon-button {
 }
 
 .filter-type-list {
-  padding: 12px;
+  padding: 8px 12px;
   overflow-y: auto;
-  max-height: calc(100vh - 200px);
+  flex: 1;
+  min-height: 0;
 }
 
 .filter-type-item {
   display: flex;
   align-items: center;
-  padding: 12px 14px;
-  min-height: 48px; /* Minimum touch target size */
-  margin-bottom: 6px;
+  padding: 10px 14px;
+  min-height: 44px; /* Minimum touch target size */
+  margin-bottom: 4px;
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.2s ease;
@@ -254,14 +257,14 @@ body.menu-open .filter-icon-button {
   }
 
   .filter-type-list {
-    padding: 10px;
-    max-height: calc(100vh - 180px);
-    max-height: calc(100dvh - 180px);
+    padding: 8px 10px;
+    flex: 1;
+    min-height: 0;
   }
 
   .filter-type-item {
-    padding: 14px 16px;
-    min-height: 52px;
+    padding: 10px 14px;
+    min-height: 44px;
   }
 
   .filter-type-label {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './AttractionTypeFilter.css'
 
-function AttractionTypeFilter({ visibleTypes, toggleType, isOpen, setIsOpen, availableTypes, showAirports, setShowAirports }) {
+function AttractionTypeFilter({ visibleTypes, toggleType, isOpen, setIsOpen, availableTypes, showAirports, setShowAirports, visibleRegions, regions, currentMapView }) {
   const filterRef = useRef(null)
 
   // Close filter panel when clicking outside
@@ -28,16 +28,80 @@ function AttractionTypeFilter({ visibleTypes, toggleType, isOpen, setIsOpen, ava
     { key: 'Temples', label: 'Temples', icon: '🕉️' },
     { key: 'Jyotirlinga', label: 'Jyotirlinga', icon: '🔱' },
     { key: 'ShaktiPeetha', label: 'Shakti Peetha', icon: '🌸' },
-    { key: 'Mutts', label: 'Mutts', icon: '⛩️' },
+    { key: 'Matham', label: 'Matham', icon: '⛩️' },
     { key: 'DivyaDesam', label: 'Divya Desam', icon: '🕉️' },
     { key: 'Forts', label: 'Forts', icon: '🏰' },
-    { key: 'TrekkingFlights', label: 'Trekking & Flights', icon: '✈️' },
+    { key: 'TrekkingFlights', label: 'Trekking', icon: '🏔️' },
     { key: 'MostPhotographed', label: 'Most Photographed', icon: '📷' }
   ]
 
+  // Check if map is showing the whole world (low zoom level)
+  const isWorldView = !currentMapView || !currentMapView.zoom || currentMapView.zoom <= 3
+  
+  // Check if map is zoomed into India, Nepal, or Sri Lanka based on center and zoom
+  const isMapZoomedIntoIndia = currentMapView && 
+                               currentMapView.center && 
+                               currentMapView.zoom >= 4 &&
+                               !isWorldView &&
+                               currentMapView.center.lat >= 6.0 && currentMapView.center.lat <= 37.0 &&
+                               currentMapView.center.lng >= 68.0 && currentMapView.center.lng <= 97.0
+  
+  const isMapZoomedIntoNepal = currentMapView && 
+                               currentMapView.center && 
+                               currentMapView.zoom >= 5 &&
+                               !isWorldView &&
+                               currentMapView.center.lat >= 26.0 && currentMapView.center.lat <= 31.0 &&
+                               currentMapView.center.lng >= 80.0 && currentMapView.center.lng <= 89.0
+  
+  const isMapZoomedIntoSriLanka = currentMapView && 
+                                  currentMapView.center && 
+                                  currentMapView.zoom >= 5 &&
+                                  !isWorldView &&
+                                  currentMapView.center.lat >= 5.5 && currentMapView.center.lat <= 10.0 &&
+                                  currentMapView.center.lng >= 79.0 && currentMapView.center.lng <= 82.0
+  
+  // Determine if we're in a country-focused view (India, Nepal, or Sri Lanka)
+  const indiaRegionsVisible = visibleRegions && (
+    visibleRegions['India-Parks'] === true || 
+    visibleRegions['India-UNESCO'] === true || 
+    visibleRegions['India-Jyotirlinga'] === true || 
+    visibleRegions['India-ShaktiPeetha'] === true || 
+    visibleRegions['India-OtherTemples'] === true || 
+    visibleRegions['India-Matham'] === true || 
+    visibleRegions['India-DivyaDesam'] === true || 
+    visibleRegions['India-Forts'] === true
+  )
+  
+  const nepalRegionsVisible = visibleRegions && (
+    visibleRegions['Nepal-Parks'] === true || 
+    visibleRegions['Nepal-Temples'] === true || 
+    visibleRegions['Nepal-UNESCO'] === true || 
+    visibleRegions['Nepal-TrekkingFlights'] === true
+  )
+  
+  const sriLankaRegionsVisible = visibleRegions && (
+    visibleRegions['Sri Lanka-Parks'] === true || 
+    visibleRegions['Sri Lanka-Temples'] === true || 
+    visibleRegions['Sri Lanka-UNESCO'] === true
+  )
+  
+  const allRegionsVisible = visibleRegions && Object.values(visibleRegions).every(value => value === true)
+  const isCountryFocusedByRegions = !allRegionsVisible && (indiaRegionsVisible || nepalRegionsVisible || sriLankaRegionsVisible)
+  const isCountryFocusedByZoom = isMapZoomedIntoIndia || isMapZoomedIntoNepal || isMapZoomedIntoSriLanka
+  
+  const isCountryFocusedView = isCountryFocusedByZoom || isCountryFocusedByRegions
+  
   // Filter to show only types available in the selected region
-  const attractionTypes = availableTypes 
-    ? allAttractionTypes.filter(type => availableTypes[type.key] === true)
+  // In general view, group temple types under "Temples"
+  let filteredTypes = availableTypes 
+    ? allAttractionTypes.filter(type => {
+        if (type.key === 'Jyotirlinga' || type.key === 'ShaktiPeetha' || type.key === 'Matham' || type.key === 'DivyaDesam') {
+          // In country-focused view, show these separately if available
+          // In general view, they're grouped under "Temples"
+          return isCountryFocusedView && availableTypes[type.key] === true
+        }
+        return availableTypes[type.key] === true
+      })
     : allAttractionTypes
 
   const toggleAll = () => {
@@ -57,8 +121,8 @@ function AttractionTypeFilter({ visibleTypes, toggleType, isOpen, setIsOpen, ava
     })
   }
 
-  const allVisible = attractionTypes.length > 0 && attractionTypes.every(type => visibleTypes[type.key])
-  const someVisible = attractionTypes.some(type => visibleTypes[type.key])
+  const allVisible = filteredTypes.length > 0 && filteredTypes.every(type => visibleTypes[type.key])
+  const someVisible = filteredTypes.some(type => visibleTypes[type.key])
 
   return (
     <>
@@ -86,7 +150,7 @@ function AttractionTypeFilter({ visibleTypes, toggleType, isOpen, setIsOpen, ava
             </button>
           </div>
           
-          {attractionTypes.length > 0 && (
+          {filteredTypes.length > 0 && (
             <div className="filter-actions">
               <button
                 className="toggle-all-button"
@@ -98,12 +162,12 @@ function AttractionTypeFilter({ visibleTypes, toggleType, isOpen, setIsOpen, ava
           )}
 
           <div className="filter-type-list">
-            {attractionTypes.length === 0 ? (
+            {filteredTypes.length === 0 ? (
               <div className="filter-empty-message">
                 No attraction types available in the selected region.
               </div>
             ) : (
-              attractionTypes.map(type => (
+              filteredTypes.map(type => (
                 <label key={type.key} className="filter-type-item">
                   <input
                     type="checkbox"
@@ -117,21 +181,23 @@ function AttractionTypeFilter({ visibleTypes, toggleType, isOpen, setIsOpen, ava
             )}
           </div>
 
-          {/* Airport Toggle Section */}
-          <div className="airport-toggle-section" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #e0e0e0' }}>
-            <label className="filter-type-item airport-toggle">
-              <input
-                type="checkbox"
-                checked={showAirports || false}
-                onChange={(e) => setShowAirports(e.target.checked)}
-              />
-              <span className="filter-type-icon">✈️</span>
-              <span className="filter-type-label">Show Airports</span>
-            </label>
-            <p className="filter-hint-small" style={{ marginTop: '8px', fontSize: '12px', color: '#666' }}>
-              Toggle to show/hide airport markers near visible parks (within 200 miles)
-            </p>
-          </div>
+          {/* Airport Toggle Section - Show dynamically when airports are available */}
+          {availableTypes && availableTypes.Airports && (
+            <div className="airport-toggle-section" style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #e0e0e0', flexShrink: 0 }}>
+              <label className="filter-type-item airport-toggle">
+                <input
+                  type="checkbox"
+                  checked={showAirports || false}
+                  onChange={(e) => setShowAirports(e.target.checked)}
+                />
+                <span className="filter-type-icon">✈️</span>
+                <span className="filter-type-label">Show Airports</span>
+              </label>
+              <p className="filter-hint-small" style={{ marginTop: '6px', fontSize: '11px', color: '#666', padding: '0 14px' }}>
+                Toggle to show/hide airport markers near visible parks (within 200 miles)
+              </p>
+            </div>
+          )}
         </div>
       )}
     </>
