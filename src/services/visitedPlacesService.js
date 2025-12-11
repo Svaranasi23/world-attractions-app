@@ -1,7 +1,12 @@
-// Service to manage visited places with localStorage persistence
+// Service to manage visited places with localStorage persistence and Firebase sync
+
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from './firebaseConfig'
+import { getCurrentUser } from './authService'
 
 const VISITED_PLACES_KEY = 'world-attractions-visited-places'
 const USER_PROFILE_KEY = 'world-attractions-user-profile'
+const SYNC_TIMESTAMP_KEY = 'world-attractions-sync-timestamp'
 
 // Get a unique ID for a park/attraction
 export const getPlaceId = (park) => {
@@ -28,6 +33,79 @@ export const loadVisitedPlaces = () => {
   return {}
 }
 
+// Load visited places from Firestore for authenticated user
+export const loadVisitedPlacesFromFirestore = async (userId) => {
+  try {
+    if (!userId || !db) return null
+    
+    const userDocRef = doc(db, 'users', userId)
+    const userDoc = await getDoc(userDocRef)
+    
+    if (userDoc.exists()) {
+      const data = userDoc.data()
+      return data.visitedPlaces || {}
+    }
+    return {}
+  } catch (error) {
+    console.error('Error loading visited places from Firestore:', error)
+    return null
+  }
+}
+
+// Save visited places to Firestore for authenticated user
+export const saveVisitedPlacesToFirestore = async (userId, visitedPlaces) => {
+  try {
+    if (!userId || !db) return false
+    
+    const userDocRef = doc(db, 'users', userId)
+    await setDoc(userDocRef, {
+      visitedPlaces,
+      lastUpdated: serverTimestamp(),
+      updatedAt: new Date().toISOString()
+    }, { merge: true })
+    
+    // Update sync timestamp in localStorage
+    localStorage.setItem(SYNC_TIMESTAMP_KEY, new Date().toISOString())
+    return true
+  } catch (error) {
+    console.error('Error saving visited places to Firestore:', error)
+    return false
+  }
+}
+
+// Sync visited places: merge Firestore data with localStorage
+export const syncVisitedPlaces = async () => {
+  const user = getCurrentUser()
+  if (!user) {
+    // Not logged in, just use localStorage
+    return loadVisitedPlaces()
+  }
+  
+  try {
+    // Load from Firestore
+    const firestorePlaces = await loadVisitedPlacesFromFirestore(user.uid)
+    if (firestorePlaces === null) {
+      // Error loading from Firestore, use localStorage
+      return loadVisitedPlaces()
+    }
+    
+    // Load from localStorage
+    const localPlaces = loadVisitedPlaces()
+    
+    // Merge: Firestore takes precedence (more recent), but include any local-only entries
+    const merged = { ...localPlaces, ...firestorePlaces }
+    
+    // Save merged data to both localStorage and Firestore
+    saveVisitedPlaces(merged)
+    await saveVisitedPlacesToFirestore(user.uid, merged)
+    
+    return merged
+  } catch (error) {
+    console.error('Error syncing visited places:', error)
+    return loadVisitedPlaces()
+  }
+}
+
 // Save visited places to localStorage
 export const saveVisitedPlaces = (visitedPlaces) => {
   try {
@@ -40,7 +118,7 @@ export const saveVisitedPlaces = (visitedPlaces) => {
 }
 
 // Mark a place as visited
-export const markAsVisited = (park) => {
+export const markAsVisited = async (park) => {
   const visitedPlaces = loadVisitedPlaces()
   const placeId = getPlaceId(park)
   visitedPlaces[placeId] = {
@@ -53,15 +131,29 @@ export const markAsVisited = (park) => {
     }
   }
   saveVisitedPlaces(visitedPlaces)
+  
+  // Sync to Firestore if user is logged in
+  const user = getCurrentUser()
+  if (user) {
+    await saveVisitedPlacesToFirestore(user.uid, visitedPlaces)
+  }
+  
   return visitedPlaces
 }
 
 // Mark a place as not visited
-export const markAsNotVisited = (park) => {
+export const markAsNotVisited = async (park) => {
   const visitedPlaces = loadVisitedPlaces()
   const placeId = getPlaceId(park)
   delete visitedPlaces[placeId]
   saveVisitedPlaces(visitedPlaces)
+  
+  // Sync to Firestore if user is logged in
+  const user = getCurrentUser()
+  if (user) {
+    await saveVisitedPlacesToFirestore(user.uid, visitedPlaces)
+  }
+  
   return visitedPlaces
 }
 
