@@ -4,7 +4,9 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.heat'
 import { loadParksData, loadAirportsData, findNearbyAirports, findNearbyParks, categorizeParksByRegion, calculateDistance } from '../services/dataService'
-import { loadVisitedPlaces, markAsVisited, markAsNotVisited, isPlaceVisited, getVisitedCount, loadUserProfile, saveUserProfile } from '../services/visitedPlacesService'
+import { loadVisitedPlaces, markAsVisited, markAsNotVisited, isPlaceVisited, getVisitedCount, loadUserProfile, saveUserProfile, syncVisitedPlaces } from '../services/visitedPlacesService'
+import { onAuthStateChange, getCurrentUser } from '../services/authService'
+import AuthModal from '../components/AuthModal'
 import TabPanel from '../components/TabPanel'
 import MapController from '../components/MapController'
 import MapViewTracker from '../components/MapViewTracker'
@@ -222,6 +224,8 @@ function MapView() {
   const [userProfile, setUserProfile] = useState(null)
   const [showVisitedOnly, setShowVisitedOnly] = useState(false)
   const [showUnvisitedOnly, setShowUnvisitedOnly] = useState(false)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null)
   const markerRefs = useRef({})
   const [visibleAttractionTypes, setVisibleAttractionTypes] = useState({
     NationalParks: true,
@@ -236,14 +240,40 @@ function MapView() {
     MostPhotographed: true
   })
 
-  // Load visited places and user profile on mount
+
+  // Load visited places and user profile on mount, and sync with Firestore if logged in
   useEffect(() => {
-    const visited = loadVisitedPlaces()
-    const profile = loadUserProfile()
-    setVisitedPlaces(visited)
-    setUserProfile(profile)
-    setShowVisitedOnly(profile.preferences?.showVisitedOnly || false)
-    setShowUnvisitedOnly(profile.preferences?.showUnvisitedOnly || false)
+    const loadAndSync = async () => {
+      const profile = loadUserProfile()
+      setUserProfile(profile)
+      setShowVisitedOnly(profile.preferences?.showVisitedOnly || false)
+      setShowUnvisitedOnly(profile.preferences?.showUnvisitedOnly || false)
+      
+      // Sync visited places (will use Firestore if logged in, localStorage otherwise)
+      const synced = await syncVisitedPlaces()
+      setVisitedPlaces(synced)
+    }
+    
+    loadAndSync()
+    
+    // Listen to auth state changes
+    const unsubscribe = onAuthStateChange(async (user) => {
+      setCurrentUser(user)
+      if (user) {
+        // User logged in, sync with Firestore
+        const synced = await syncVisitedPlaces()
+        setVisitedPlaces(synced)
+      } else {
+        // User logged out, just use localStorage
+        const local = loadVisitedPlaces()
+        setVisitedPlaces(local)
+      }
+    })
+    
+    // Get initial user
+    setCurrentUser(getCurrentUser())
+    
+    return () => unsubscribe()
   }, [])
 
   useEffect(() => {
@@ -1891,19 +1921,32 @@ function MapView() {
     }
   }
 
-  const handleToggleVisited = (park) => {
+  const handleToggleVisited = async (park) => {
     const isVisited = isPlaceVisited(park, visitedPlaces)
     let updated
     if (isVisited) {
-      updated = markAsNotVisited(park)
+      updated = await markAsNotVisited(park)
     } else {
-      updated = markAsVisited(park)
+      updated = await markAsVisited(park)
     }
     setVisitedPlaces(updated)
     
     // Update user profile preferences
     const profile = loadUserProfile()
     saveUserProfile(profile)
+  }
+  
+  const handleAuthChange = async (user) => {
+    setCurrentUser(user)
+    if (user) {
+      // User logged in, sync with Firestore
+      const synced = await syncVisitedPlaces()
+      setVisitedPlaces(synced)
+    } else {
+      // User logged out, just use localStorage
+      const local = loadVisitedPlaces()
+      setVisitedPlaces(local)
+    }
   }
 
   return (
@@ -2325,7 +2368,21 @@ function MapView() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         visitedPlaces={visitedPlaces}
+        onAuthClick={() => {
+          setAuthModalOpen(true)
+        }}
+        currentUser={currentUser}
       />
+      
+      {authModalOpen && (
+        <AuthModal
+          isOpen={authModalOpen}
+          onClose={() => {
+            setAuthModalOpen(false)
+          }}
+          onAuthChange={handleAuthChange}
+        />
+      )}
     </div>
   )
 }

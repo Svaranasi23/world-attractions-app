@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import StatisticsPanel from './StatisticsPanel'
 import './TabPanel.css'
 
-function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, toggleRegion, setRegionVisibility, handleRegionFocus, visitedPlaces }) {
+function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, toggleRegion, setRegionVisibility, handleRegionFocus, visitedPlaces, onAuthClick, currentUser }) {
   const [isOpen, setIsOpen] = useState(false)
   const [currentView, setCurrentView] = useState(null) // null = menu list, 'stats' = content view
   
@@ -174,14 +174,7 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
 
   // Close menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isOpen && !event.target.closest('.hamburger-menu') && !event.target.closest('.hamburger-button')) {
-        closeMenu()
-      }
-    }
-
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
       // Prevent body scroll when menu is open on mobile
       document.body.style.overflow = 'hidden'
       // Add class to body to adjust zoom controls position
@@ -192,7 +185,6 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
       document.body.style.overflow = ''
       document.body.classList.remove('menu-open')
     }
@@ -216,16 +208,40 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
 
       {/* Overlay */}
       {isOpen && (
-        <div className="menu-overlay" onClick={closeMenu}></div>
+        <div 
+          className="menu-overlay" 
+          onClick={(e) => {
+            // Only close if clicking directly on overlay, not on menu content
+            if (e.target === e.currentTarget) {
+              e.stopPropagation()
+              closeMenu()
+            }
+          }}
+        ></div>
       )}
 
       {/* Slide-in Drawer */}
-      <div className={`hamburger-menu ${isOpen ? 'open' : ''}`}>
+      <div 
+        className={`hamburger-menu ${isOpen ? 'open' : ''}`}
+        onMouseDown={(e) => {
+          // Prevent clicks inside menu from bubbling to overlay
+          e.stopPropagation()
+        }}
+        onClick={(e) => {
+          // Prevent clicks inside menu from closing it
+          e.stopPropagation()
+        }}
+      >
         <div className="menu-header">
           {currentView && (
             <button
               className="menu-back-button"
-              onClick={() => setCurrentView(null)}
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setCurrentView(null)
+              }}
               aria-label="Back"
             >
               ←
@@ -234,7 +250,12 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
           <h2>{currentView ? '📊 Statistics' : 'World Attractions'}</h2>
           <button
             className="menu-close-button"
-            onClick={closeMenu}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              closeMenu()
+            }}
             aria-label="Close menu"
           >
             ×
@@ -244,11 +265,48 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
         {!currentView ? (
           /* Main Menu - Continents with Collapsible Countries */
           <div className="menu-navigation">
+            {/* Account/Login Button */}
+            <div className="menu-continent-group">
+              <button
+                className="menu-continent-item auth-menu-item"
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  if (onAuthClick && typeof onAuthClick === 'function') {
+                    onAuthClick()
+                  }
+                }}
+                style={{ 
+                  pointerEvents: 'auto', 
+                  cursor: 'pointer', 
+                  zIndex: 1000,
+                  position: 'relative'
+                }}
+              >
+                <div className="continent-icon">{currentUser ? '👤' : '🔐'}</div>
+                <div className="continent-info">
+                  <div className="continent-name">
+                    {currentUser ? (currentUser.displayName || currentUser.email) : 'Sign In to Sync'}
+                  </div>
+                  <div className="continent-subtitle">
+                    {currentUser ? 'Your places sync across devices' : 'Sync visited places across devices'}
+                  </div>
+                </div>
+                <div className="menu-arrow">→</div>
+              </button>
+            </div>
+            
             {/* World Attractions - Show All */}
             <div className="menu-continent-group">
               <button
                 className="menu-continent-item"
-                onClick={handleWorldAttractionsClick}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handleWorldAttractionsClick()
+                }}
               >
                 <div className="continent-icon">🌍</div>
                 <div className="continent-info">
@@ -262,7 +320,9 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
             <div className="menu-continent-group">
               <button
                 className="menu-continent-item"
+                type="button"
                 onClick={(e) => {
+                  e.preventDefault()
                   e.stopPropagation()
                   const newExpanded = !americasExpanded
                   setAmericasExpanded(newExpanded)
@@ -281,7 +341,12 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                 <div className="continent-countries">
                   <button
                     className="menu-country-item"
-                    onClick={() => handleCountryClick('United States')}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      handleCountryClick('United States')
+                    }}
                   >
                     <div className="country-info">
                       <div className="country-name">🇺🇸 United States</div>
@@ -290,7 +355,12 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                   {regions.Canada && regions.Canada.length > 0 && (
                     <button
                       className="menu-country-item"
-                      onClick={() => handleCountryClick('Canada')}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleCountryClick('Canada')
+                      }}
                     >
                       <div className="country-info">
                         <div className="country-name">🇨🇦 Canada</div>
@@ -300,7 +370,12 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                   {regions['Costa Rica'] && regions['Costa Rica'].length > 0 && (
                     <button
                       className="menu-country-item"
-                      onClick={() => handleCountryClick('Costa Rica')}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleCountryClick('Costa Rica')
+                      }}
                     >
                       <div className="country-info">
                         <div className="country-name">🇨🇷 Costa Rica</div>
@@ -310,7 +385,12 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                   {regions['CentralAmerica-UNESCO'] && regions['CentralAmerica-UNESCO'].length > 0 && (
                     <button
                       className="menu-country-item"
-                      onClick={() => handleCountryClick('Central America UNESCO')}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleCountryClick('Central America UNESCO')
+                      }}
                     >
                       <div className="country-info">
                         <div className="country-name">🌎 Central America UNESCO</div>
@@ -325,7 +405,9 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
             <div className="menu-continent-group">
               <button
                 className="menu-continent-item"
+                type="button"
                 onClick={(e) => {
+                  e.preventDefault()
                   e.stopPropagation()
                   const newExpanded = !asiaExpanded
                   setAsiaExpanded(newExpanded)
@@ -344,7 +426,12 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                 <div className="continent-countries">
                   <button
                     className="menu-country-item"
-                    onClick={() => handleCountryClick('India')}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      handleCountryClick('India')
+                    }}
                   >
                     <div className="country-info">
                       <div className="country-name">🇮🇳 India</div>
@@ -353,7 +440,12 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                   {regions['Nepal-Parks'] || regions['Nepal-Temples'] || regions['Nepal-UNESCO'] || regions['Nepal-TrekkingFlights'] ? (
                     <button
                       className="menu-country-item"
-                      onClick={() => handleCountryClick('Nepal')}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleCountryClick('Nepal')
+                      }}
                     >
                       <div className="country-info">
                         <div className="country-name">🇳🇵 Nepal</div>
@@ -363,7 +455,12 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                   {regions['Sri Lanka-Parks'] || regions['Sri Lanka-Temples'] || regions['Sri Lanka-UNESCO'] ? (
                     <button
                       className="menu-country-item"
-                      onClick={() => handleCountryClick('Sri Lanka')}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleCountryClick('Sri Lanka')
+                      }}
                     >
                       <div className="country-info">
                         <div className="country-name">🇱🇰 Sri Lanka</div>
@@ -375,27 +472,47 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                   {regions['SouthAsia-UNESCO'] && regions['SouthAsia-UNESCO'].length > 0 && (
                     <>
                       {regions['SouthAsia-UNESCO'].some(p => p.Country === 'Bangladesh') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Bangladesh')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Bangladesh')
+                        }}>
                           <div className="country-info"><div className="country-name">🇧🇩 Bangladesh</div></div>
                         </button>
                       )}
                       {regions['SouthAsia-UNESCO'].some(p => p.Country === 'Pakistan') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Pakistan')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Pakistan')
+                        }}>
                           <div className="country-info"><div className="country-name">🇵🇰 Pakistan</div></div>
                         </button>
                       )}
                       {regions['SouthAsia-UNESCO'].some(p => p.Country === 'Afghanistan') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Afghanistan')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Afghanistan')
+                        }}>
                           <div className="country-info"><div className="country-name">🇦🇫 Afghanistan</div></div>
                         </button>
                       )}
                       {regions['SouthAsia-UNESCO'].some(p => p.Country === 'Bhutan') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Bhutan')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Bhutan')
+                        }}>
                           <div className="country-info"><div className="country-name">🇧🇹 Bhutan</div></div>
                         </button>
                       )}
                       {regions['SouthAsia-UNESCO'].some(p => p.Country === 'Maldives') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Maldives')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Maldives')
+                        }}>
                           <div className="country-info"><div className="country-name">🇲🇻 Maldives</div></div>
                         </button>
                       )}
@@ -406,57 +523,101 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                   {regions['SouthEastAsia-UNESCO'] && regions['SouthEastAsia-UNESCO'].length > 0 && (
                     <>
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Thailand') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Thailand')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Thailand')
+                        }}>
                           <div className="country-info"><div className="country-name">🇹🇭 Thailand</div></div>
                         </button>
                       )}
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Indonesia') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Indonesia')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Indonesia')
+                        }}>
                           <div className="country-info"><div className="country-name">🇮🇩 Indonesia</div></div>
                         </button>
                       )}
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Vietnam') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Vietnam')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Vietnam')
+                        }}>
                           <div className="country-info"><div className="country-name">🇻🇳 Vietnam</div></div>
                         </button>
                       )}
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Cambodia') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Cambodia')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Cambodia')
+                        }}>
                           <div className="country-info"><div className="country-name">🇰🇭 Cambodia</div></div>
                         </button>
                       )}
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Myanmar') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Myanmar')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Myanmar')
+                        }}>
                           <div className="country-info"><div className="country-name">🇲🇲 Myanmar</div></div>
                         </button>
                       )}
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Philippines') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Philippines')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Philippines')
+                        }}>
                           <div className="country-info"><div className="country-name">🇵🇭 Philippines</div></div>
                         </button>
                       )}
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Malaysia') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Malaysia')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Malaysia')
+                        }}>
                           <div className="country-info"><div className="country-name">🇲🇾 Malaysia</div></div>
                         </button>
                       )}
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Singapore') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Singapore')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Singapore')
+                        }}>
                           <div className="country-info"><div className="country-name">🇸🇬 Singapore</div></div>
                         </button>
                       )}
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Laos') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Laos')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Laos')
+                        }}>
                           <div className="country-info"><div className="country-name">🇱🇦 Laos</div></div>
                         </button>
                       )}
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'Brunei') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Brunei')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Brunei')
+                        }}>
                           <div className="country-info"><div className="country-name">🇧🇳 Brunei</div></div>
                         </button>
                       )}
                       {regions['SouthEastAsia-UNESCO'].some(p => p.Country === 'East Timor') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('East Timor')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('East Timor')
+                        }}>
                           <div className="country-info"><div className="country-name">🇹🇱 East Timor</div></div>
                         </button>
                       )}
@@ -467,27 +628,47 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                   {regions['EastAsia-UNESCO'] && regions['EastAsia-UNESCO'].length > 0 && (
                     <>
                       {regions['EastAsia-UNESCO'].some(p => p.Country === 'China') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('China')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('China')
+                        }}>
                           <div className="country-info"><div className="country-name">🇨🇳 China</div></div>
                         </button>
                       )}
                       {regions['EastAsia-UNESCO'].some(p => p.Country === 'Japan') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Japan')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Japan')
+                        }}>
                           <div className="country-info"><div className="country-name">🇯🇵 Japan</div></div>
                         </button>
                       )}
                       {regions['EastAsia-UNESCO'].some(p => p.Country === 'South Korea') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('South Korea')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('South Korea')
+                        }}>
                           <div className="country-info"><div className="country-name">🇰🇷 South Korea</div></div>
                         </button>
                       )}
                       {regions['EastAsia-UNESCO'].some(p => p.Country === 'North Korea') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('North Korea')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('North Korea')
+                        }}>
                           <div className="country-info"><div className="country-name">🇰🇵 North Korea</div></div>
                         </button>
                       )}
                       {regions['EastAsia-UNESCO'].some(p => p.Country === 'Mongolia') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Mongolia')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Mongolia')
+                        }}>
                           <div className="country-info"><div className="country-name">🇲🇳 Mongolia</div></div>
                         </button>
                       )}
@@ -498,27 +679,47 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                   {regions['CentralAsia-UNESCO'] && regions['CentralAsia-UNESCO'].length > 0 && (
                     <>
                       {regions['CentralAsia-UNESCO'].some(p => p.Country === 'Kazakhstan') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Kazakhstan')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Kazakhstan')
+                        }}>
                           <div className="country-info"><div className="country-name">🇰🇿 Kazakhstan</div></div>
                         </button>
                       )}
                       {regions['CentralAsia-UNESCO'].some(p => p.Country === 'Kyrgyzstan') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Kyrgyzstan')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Kyrgyzstan')
+                        }}>
                           <div className="country-info"><div className="country-name">🇰🇬 Kyrgyzstan</div></div>
                         </button>
                       )}
                       {regions['CentralAsia-UNESCO'].some(p => p.Country === 'Tajikistan') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Tajikistan')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Tajikistan')
+                        }}>
                           <div className="country-info"><div className="country-name">🇹🇯 Tajikistan</div></div>
                         </button>
                       )}
                       {regions['CentralAsia-UNESCO'].some(p => p.Country === 'Turkmenistan') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Turkmenistan')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Turkmenistan')
+                        }}>
                           <div className="country-info"><div className="country-name">🇹🇲 Turkmenistan</div></div>
                         </button>
                       )}
                       {regions['CentralAsia-UNESCO'].some(p => p.Country === 'Uzbekistan') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Uzbekistan')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Uzbekistan')
+                        }}>
                           <div className="country-info"><div className="country-name">🇺🇿 Uzbekistan</div></div>
                         </button>
                       )}
@@ -529,77 +730,137 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
                   {regions['WestAsia-UNESCO'] && regions['WestAsia-UNESCO'].length > 0 && (
                     <>
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Iran') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Iran')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Iran')
+                        }}>
                           <div className="country-info"><div className="country-name">🇮🇷 Iran</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Iraq') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Iraq')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Iraq')
+                        }}>
                           <div className="country-info"><div className="country-name">🇮🇶 Iraq</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Jordan') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Jordan')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Jordan')
+                        }}>
                           <div className="country-info"><div className="country-name">🇯🇴 Jordan</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Lebanon') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Lebanon')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Lebanon')
+                        }}>
                           <div className="country-info"><div className="country-name">🇱🇧 Lebanon</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Saudi Arabia') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Saudi Arabia')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Saudi Arabia')
+                        }}>
                           <div className="country-info"><div className="country-name">🇸🇦 Saudi Arabia</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Syria') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Syria')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Syria')
+                        }}>
                           <div className="country-info"><div className="country-name">🇸🇾 Syria</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Turkey') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Turkey')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Turkey')
+                        }}>
                           <div className="country-info"><div className="country-name">🇹🇷 Turkey</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'UAE' || p.Country === 'United Arab Emirates') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('UAE')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('UAE')
+                        }}>
                           <div className="country-info"><div className="country-name">🇦🇪 UAE</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Yemen') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Yemen')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Yemen')
+                        }}>
                           <div className="country-info"><div className="country-name">🇾🇪 Yemen</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Oman') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Oman')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Oman')
+                        }}>
                           <div className="country-info"><div className="country-name">🇴🇲 Oman</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Qatar') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Qatar')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Qatar')
+                        }}>
                           <div className="country-info"><div className="country-name">🇶🇦 Qatar</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Kuwait') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Kuwait')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Kuwait')
+                        }}>
                           <div className="country-info"><div className="country-name">🇰🇼 Kuwait</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Bahrain') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Bahrain')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Bahrain')
+                        }}>
                           <div className="country-info"><div className="country-name">🇧🇭 Bahrain</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Israel') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Israel')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Israel')
+                        }}>
                           <div className="country-info"><div className="country-name">🇮🇱 Israel</div></div>
                         </button>
                       )}
                       {regions['WestAsia-UNESCO'].some(p => p.Country === 'Palestine') && (
-                        <button className="menu-country-item" onClick={() => handleCountryClick('Palestine')}>
+                        <button className="menu-country-item" type="button" onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          handleCountryClick('Palestine')
+                        }}>
                           <div className="country-info"><div className="country-name">🇵🇸 Palestine</div></div>
                         </button>
                       )}
@@ -613,7 +874,12 @@ function TabPanel({ activeTab, setActiveTab, parks, regions, visibleRegions, tog
             <div className="menu-continent-group">
               <button
                 className="menu-continent-item"
-                onClick={() => handleMenuClick('stats')}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handleMenuClick('stats')
+                }}
               >
                 <div className="continent-icon">📊</div>
                 <div className="continent-info">
