@@ -25,7 +25,7 @@ To secure your API key, you need to allow these specific APIs:
 ### Step 2: Navigate to API Credentials
 
 1. Go to **APIs & Services** → **Credentials**
-2. Find your API key: `YOUR_FIREBASE_API_KEY_HERE`
+2. Find your API key (it starts with `AIzaSy...`)
 3. Click on the API key to edit it
 
 ### Step 3: Set Application Restrictions
