@@ -8,12 +8,12 @@ Add these environment variables in your Vercel project settings:
 
 | Variable Name | Value | Description |
 |--------------|-------|-------------|
-| `VITE_FIREBASE_API_KEY` | `YOUR_FIREBASE_API_KEY_HERE` | Firebase API Key |
+| `VITE_FIREBASE_API_KEY` | `YOUR_FIREBASE_API_KEY` | Firebase API Key (get from Firebase Console) |
 | `VITE_FIREBASE_AUTH_DOMAIN` | `world-attractions-explorer.firebaseapp.com` | Firebase Auth Domain |
 | `VITE_FIREBASE_PROJECT_ID` | `world-attractions-explorer` | Firebase Project ID |
 | `VITE_FIREBASE_STORAGE_BUCKET` | `world-attractions-explorer.appspot.com` | Firebase Storage Bucket |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | `219161346422` | Firebase Messaging Sender ID |
-| `VITE_FIREBASE_APP_ID` | `1:219161346422:web:b1c38dea46bb73142bba57` | Firebase App ID |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | `YOUR_MESSAGING_SENDER_ID` | Firebase Messaging Sender ID |
+| `VITE_FIREBASE_APP_ID` | `YOUR_APP_ID` | Firebase App ID |
 
 ## How to Add Environment Variables in Vercel
 
@@ -30,7 +30,7 @@ Add these environment variables in your Vercel project settings:
 For each variable above:
 1. Click **Add New**
 2. Enter the **Key** (e.g., `VITE_FIREBASE_API_KEY`)
-3. Enter the **Value** (e.g., `YOUR_FIREBASE_API_KEY_HERE`)
+3. Enter the **Value** (get from Firebase Console → Project Settings → General → Your apps)
 4. Select the environments where it should be available:
    - ✅ **Production**
    - ✅ **Preview**
@@ -44,15 +44,23 @@ After adding all variables:
 3. Click **Redeploy**
 4. Or push a new commit to trigger automatic deployment
 
-## Quick Copy-Paste Values
+## How to Get Your Firebase Config Values
 
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Select your project: **world-attractions-explorer**
+3. Go to **Project Settings** (gear icon) → **General** tab
+4. Scroll down to **Your apps** section
+5. Click on your web app (or create one if you haven't)
+6. Copy the values from the `firebaseConfig` object
+
+**Example format:**
 ```
-VITE_FIREBASE_API_KEY=YOUR_FIREBASE_API_KEY_HERE
+VITE_FIREBASE_API_KEY=YOUR_API_KEY_HERE
 VITE_FIREBASE_AUTH_DOMAIN=world-attractions-explorer.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=world-attractions-explorer
 VITE_FIREBASE_STORAGE_BUCKET=world-attractions-explorer.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=219161346422
-VITE_FIREBASE_APP_ID=1:219161346422:web:b1c38dea46bb73142bba57
+VITE_FIREBASE_MESSAGING_SENDER_ID=YOUR_SENDER_ID_HERE
+VITE_FIREBASE_APP_ID=YOUR_APP_ID_HERE
 ```
 
 ## Important Notes

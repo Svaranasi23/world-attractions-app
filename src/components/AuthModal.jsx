@@ -142,7 +142,7 @@ const AuthModal = ({ isOpen, onClose, onAuthChange }) => {
     try {
       const result = await resetPassword(email)
       if (result.success) {
-        setSuccess('Email sent successfully')
+        setSuccess(`Password reset email sent to ${email}. Please check your inbox and spam folder.`)
         // Don't clear email so user can see where it was sent
       } else {
         setError(result.error || 'Failed to send password reset email')
