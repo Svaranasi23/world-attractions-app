@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet.heat'
 import { loadParksData, loadAirportsData, findNearbyAirports, findNearbyParks, categorizeParksByRegion, calculateDistance } from '../services/dataService'
 import { loadVisitedPlaces, markAsVisited, markAsNotVisited, isPlaceVisited, getVisitedCount, loadUserProfile, saveUserProfile, syncVisitedPlaces } from '../services/visitedPlacesService'
-import { loadCustomPins, addCustomPin, deleteCustomPin, syncCustomPins, getCustomPinsArray } from '../services/customPinsService'
+import { loadCustomPins, addCustomPin, deleteCustomPin, syncCustomPins } from '../services/customPinsService'
 import { onAuthStateChange, getCurrentUser } from '../services/authService'
 import AuthModal from '../components/AuthModal'
 import CustomPinModal from '../components/CustomPinModal'
@@ -2386,7 +2386,7 @@ function MapView() {
         })}
 
         {/* Custom Pin Markers */}
-        {getCustomPinsArray().map((pin) => {
+        {Object.values(customPins).map((pin) => {
           const lat = pin.coordinates.lat
           const lon = pin.coordinates.lon
           
