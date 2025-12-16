@@ -75,9 +75,6 @@ const CustomPinModal = ({
           
           const data = await response.json()
           
-          // Debug: Log the full API response to understand structure
-          console.log('📍 Reverse geocoding API response:', data)
-          
           const country = data.countryName || data.countryCode || null
           const isIndia = country === 'India' || country === 'IN'
           
@@ -90,9 +87,6 @@ const CustomPinModal = ({
             // For India, check administrative levels more carefully
             // Order typically: 0=country, 1=state, 2=district, 3=subdistrict, 4=city/town, 5=village
             const adminLevels = data.localityInfo.administrative.sort((a, b) => a.order - b.order)
-            
-            // Log administrative levels for debugging
-            console.log('📍 India administrative levels:', adminLevels)
             
             // For India, prefer city/town (order 4-5) over village (order 6+)
             // Try to find the most specific city/town name
@@ -176,8 +170,6 @@ const CustomPinModal = ({
               }
             }
             
-            console.log('📍 Extracted city:', { cityName, finalCity, state, country })
-            
             return {
               name: cityName,
               fullName: cityName,
@@ -188,8 +180,6 @@ const CustomPinModal = ({
               country: country
             }
           }
-          
-          console.log('📍 No city found in reverse geocoding response')
           
           return null
         } catch (error) {
@@ -455,33 +445,6 @@ const CustomPinModal = ({
         // Finally, sort by distance (closest first)
         return (a.distance || 0) - (b.distance || 0)
       })
-      
-      // Debug logging (can be removed in production)
-      if (suggestions.length > 0) {
-        console.log('📍 Found location suggestions:', suggestions.length, suggestions)
-        console.log('📍 Closest suggestion:', suggestions[0])
-      } else {
-        console.log('📍 No location suggestions found for coordinates:', lat, lon)
-        // Log nearby parks for debugging
-        if (parks && parks.length > 0) {
-          const closestParks = parks
-            .map(park => {
-              try {
-                const parkLat = parseFloat(park.Latitude)
-                const parkLon = parseFloat(park.Longitude)
-                if (isNaN(parkLat) || isNaN(parkLon)) return null
-                const distance = calculateDistance(lat, lon, parkLat, parkLon)
-                return { name: park.Name, distance, hasDescription: !!park.Description }
-              } catch {
-                return null
-              }
-            })
-            .filter(Boolean)
-            .sort((a, b) => a.distance - b.distance)
-            .slice(0, 5)
-          console.log('📍 Closest 5 parks:', closestParks)
-        }
-      }
       
       if (isMounted) {
         setLocationSuggestions(suggestions)

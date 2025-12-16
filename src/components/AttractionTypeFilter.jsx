@@ -167,26 +167,29 @@ function AttractionTypeFilter({ visibleTypes, toggleType, isOpen, setIsOpen, ava
                 No attraction types available in the selected region.
               </div>
             ) : (
-              filteredTypes.map(type => (
-                <label 
-                  key={type.key} 
-                  className="filter-type-item"
-                >
-                  <input
-                    type="checkbox"
-                    checked={visibleTypes[type.key] || false}
-                    onChange={(e) => {
-                      e.stopPropagation()
-                      toggleType(type.key)
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                    }}
-                  />
-                  <span className="filter-type-icon">{type.icon}</span>
-                  <span className="filter-type-label">{type.label}</span>
-                </label>
-              ))
+              filteredTypes.map(type => {
+                const isActive = visibleTypes[type.key] || false
+                return (
+                  <label 
+                    key={type.key} 
+                    className={`filter-type-item ${isActive ? 'active' : ''}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isActive}
+                      onChange={(e) => {
+                        e.stopPropagation()
+                        toggleType(type.key)
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                      }}
+                    />
+                    <span className="filter-type-icon">{type.icon}</span>
+                    <span className="filter-type-label">{type.label}</span>
+                  </label>
+                )
+              })
             )}
           </div>
 

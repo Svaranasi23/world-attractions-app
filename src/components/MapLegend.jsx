@@ -97,14 +97,8 @@ function MapLegend({ visibleRegions, regions, showAirports, airports, currentMap
         icon: '📷',
         label: 'Most Photographed',
         color: '#FFB6C1',
-        borderColor: '#FF8C9F'
-      },
-      {
-        icon: '🌲',
-        label: 'Most Photographed National Parks',
-        color: '#FFB6C1',
         borderColor: '#FF8C9F',
-        note: '(Tree icon on light red)'
+        note: 'Includes National Parks (🌲 on light red)'
       }
     ]
     

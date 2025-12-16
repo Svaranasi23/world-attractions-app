@@ -109,7 +109,6 @@ export const resetPassword = async (email) => {
       url: window.location.origin,
       handleCodeInApp: false
     })
-    console.log('Password reset email sent successfully to:', email)
     return { success: true }
   } catch (error) {
     console.error('Password reset error:', error)

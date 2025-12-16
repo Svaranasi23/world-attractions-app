@@ -322,7 +322,6 @@ function MapView() {
         setParks(parksData)
         setAirports(airportsData)
         setLoading(false)
-        console.log('Loaded parks data:', parksData.length, 'parks')
       } catch (error) {
         console.error('Error loading data:', error)
         setLoading(false)

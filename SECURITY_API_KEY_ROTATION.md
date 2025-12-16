@@ -145,3 +145,4 @@ If you encounter issues:
 3. Check browser console for errors
 4. Ensure APIs (Identity Toolkit, Firestore) are enabled
 
+

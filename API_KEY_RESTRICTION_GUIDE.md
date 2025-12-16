@@ -103,6 +103,11 @@ If you get errors after restricting:
 1. **"API key not valid"** - Check that the correct APIs are enabled
 2. **"Referer not allowed"** - Add your domain to HTTP referrer restrictions
 3. **"API not enabled"** - Enable the required APIs in Google Cloud Console
+4. **"403 Forbidden on securetoken.googleapis.com"** - This is the token refresh endpoint. Make sure:
+   - Identity Toolkit API is enabled and in API restrictions
+   - Your domain is in HTTP referrer restrictions
+   - Your domain is in Firebase authorized domains
+   - See `FIX_TOKEN_REFRESH_403.md` for detailed steps
 
 ## Security Best Practices
 
