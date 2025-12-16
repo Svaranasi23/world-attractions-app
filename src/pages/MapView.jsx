@@ -2523,6 +2523,8 @@ function MapView() {
           onSave={handleSaveCustomPin}
           lat={pendingPinLocation.lat}
           lon={pendingPinLocation.lon}
+          parks={parks}
+          airports={airports}
         />
       )}
 

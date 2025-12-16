@@ -167,3 +167,76 @@
   cursor: not-allowed;
 }
 
+/* Nearby Locations Section */
+.nearby-locations-section {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.nearby-locations-title {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.nearby-attractions,
+.nearby-airports {
+  margin-bottom: 15px;
+}
+
+.nearby-attractions:last-child,
+.nearby-airports:last-child {
+  margin-bottom: 0;
+}
+
+.nearby-attractions strong,
+.nearby-airports strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #555;
+}
+
+.nearby-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nearby-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 12px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.nearby-item:last-child {
+  border-bottom: none;
+}
+
+.attraction-name,
+.airport-name {
+  flex: 1;
+  color: #333;
+  font-weight: 500;
+}
+
+.airport-code {
+  font-weight: 600;
+  color: #0078d4;
+  min-width: 40px;
+}
+
+.attraction-distance,
+.airport-distance {
+  color: #666;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
