@@ -154,22 +154,22 @@
   color: #2e7d32;
 }
 
-/* Move ALL Leaflet zoom controls to bottom-right to avoid hamburger menu */
+/* Move ALL Leaflet zoom controls to bottom-left to avoid hamburger menu and safe area issues */
 /* Hide any controls in top-left or top-right */
 .leaflet-top.leaflet-left {
-  display: none !important; /* Hide top-left controls */
-}
-
-/* Move top-right controls to bottom-right */
-.leaflet-top.leaflet-right {
   top: auto !important;
   bottom: 20px !important;
-  right: 20px !important;
-  left: auto !important;
-  z-index: 1006 !important; /* Higher z-index to ensure visibility above other elements */
+  left: 20px !important;
+  right: auto !important;
+  z-index: 1006 !important;
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+}
+
+/* Hide top-right controls (we're using bottom-left now) */
+.leaflet-top.leaflet-right {
+  display: none !important;
 }
 
 /* Ensure zoom controls are visible and properly positioned */
@@ -191,22 +191,19 @@
   z-index: 1006 !important;
 }
 
-/* On desktop, when menu is open (350px wide), move zoom controls left to avoid overlap */
+/* On desktop, when menu is open (350px wide), move zoom controls right to avoid overlap */
 @media (min-width: 769px) {
-  body.menu-open .leaflet-top.leaflet-right {
-    right: 370px !important; /* 350px menu + 20px gap */
+  body.menu-open .leaflet-top.leaflet-left {
+    left: 370px !important; /* 350px menu + 20px gap */
   }
 }
 
 @media (max-width: 768px) {
-  .leaflet-top.leaflet-right {
+  .leaflet-top.leaflet-left {
     bottom: calc(15px + env(safe-area-inset-bottom)) !important;
     bottom: calc(15px + constant(safe-area-inset-bottom)) !important; /* iOS 11.0-11.2 */
-    /* Use a simpler right position - position to left of legend (legend is at 70px) */
-    right: 80px !important;
-    /* Add safe area inset as margin to keep it visible */
-    margin-right: env(safe-area-inset-right) !important;
-    margin-right: constant(safe-area-inset-right) !important; /* iOS 11.0-11.2 */
+    left: calc(15px + env(safe-area-inset-left)) !important;
+    left: calc(15px + constant(safe-area-inset-left)) !important; /* iOS 11.0-11.2 */
     z-index: 1006 !important;
     display: block !important;
     visibility: visible !important;
@@ -386,13 +383,14 @@
   }
 }
 
-/* Adjust position on mobile */
+/* Adjust position on mobile - move pin toggle to right side to avoid zoom controls on left */
 @media (max-width: 768px) {
   .pin-mode-toggle {
     bottom: calc(15px + env(safe-area-inset-bottom));
     bottom: calc(15px + constant(safe-area-inset-bottom)); /* iOS 11.0-11.2 */
-    left: calc(15px + env(safe-area-inset-left));
-    left: calc(15px + constant(safe-area-inset-left)); /* iOS 11.0-11.2 */
+    left: auto !important;
+    right: calc(15px + env(safe-area-inset-right));
+    right: calc(15px + constant(safe-area-inset-right)); /* iOS 11.0-11.2 */
     padding: 10px 16px;
     font-size: 12px;
   }
