@@ -161,6 +161,7 @@
 }
 
 /* Default: bottom-right controls (desktop) - ZoomControl with position="bottomright" creates .leaflet-bottom.leaflet-right */
+/* Only apply desktop positioning by default, mobile will override in media query */
 .leaflet-bottom.leaflet-right {
   bottom: 20px !important;
   right: 20px !important;
@@ -205,19 +206,24 @@
 
 /* Desktop layout: zoom controls bottom-right, legend to left of zoom, add pin to left of legend */
 @media (min-width: 769px) {
-  /* Zoom controls stay bottom-right */
+  /* Zoom controls stay bottom-right - explicitly override any mobile rules */
   .leaflet-bottom.leaflet-right,
   .leaflet-top.leaflet-right {
     bottom: 20px !important;
     right: 20px !important;
     left: auto !important;
     top: auto !important;
+    z-index: 1006 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
   /* When menu is open, move zoom controls left */
   body.menu-open .leaflet-bottom.leaflet-right,
   body.menu-open .leaflet-top.leaflet-right {
     right: 370px !important; /* 350px menu + 20px gap */
+    left: auto !important;
   }
   
   /* Add pin button: position to left of legend (legend is at ~80px from right) */
@@ -233,8 +239,9 @@
 /* Mobile layout: zoom controls bottom-left, legend bottom-right, add pin above zoom on left */
 @media (max-width: 768px) {
   /* On mobile, move zoom controls to bottom-left to avoid safe area issues */
-  .leaflet-bottom.leaflet-right,
-  .leaflet-top.leaflet-right {
+  /* Use more specific selector to override desktop rules */
+  .map-view .leaflet-bottom.leaflet-right,
+  .map-view .leaflet-top.leaflet-right {
     top: auto !important;
     bottom: calc(15px + env(safe-area-inset-bottom)) !important;
     bottom: calc(15px + constant(safe-area-inset-bottom)) !important; /* iOS 11.0-11.2 */

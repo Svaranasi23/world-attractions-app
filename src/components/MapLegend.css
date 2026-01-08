@@ -12,6 +12,7 @@
   .map-legend-container {
     bottom: 20px !important;
     right: 80px !important; /* To left of zoom controls (zoom ~60px wide) */
+    left: auto !important;
   }
 }
 
