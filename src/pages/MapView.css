@@ -5,6 +5,11 @@
   overflow: hidden;
 }
 
+/* Ensure map container doesn't clip zoom controls */
+.leaflet-container {
+  overflow: visible !important;
+}
+
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -197,13 +202,16 @@
   .leaflet-top.leaflet-right {
     bottom: calc(15px + env(safe-area-inset-bottom)) !important;
     bottom: calc(15px + constant(safe-area-inset-bottom)) !important; /* iOS 11.0-11.2 */
-    /* Position to the left of legend button (legend is at ~70px, zoom controls are ~60px wide) */
-    right: calc(75px + env(safe-area-inset-right)) !important;
-    right: calc(75px + constant(safe-area-inset-right)) !important; /* iOS 11.0-11.2 */
+    /* Use a simpler right position - position to left of legend (legend is at 70px) */
+    right: 80px !important;
+    /* Add safe area inset as margin to keep it visible */
+    margin-right: env(safe-area-inset-right) !important;
+    margin-right: constant(safe-area-inset-right) !important; /* iOS 11.0-11.2 */
     z-index: 1006 !important;
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
   }
   
   /* Ensure zoom control buttons are visible */
@@ -213,6 +221,19 @@
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
+    background-color: white !important;
+    border: 2px solid rgba(0, 0, 0, 0.2) !important;
+    width: 30px !important;
+    height: 30px !important;
+    line-height: 30px !important;
+    font-size: 18px !important;
+  }
+  
+  /* Ensure the zoom control container is visible */
+  .leaflet-control-zoom {
+    border: none !important;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4) !important;
+    background: transparent !important;
   }
 }
 
