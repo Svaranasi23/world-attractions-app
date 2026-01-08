@@ -270,6 +270,7 @@
     height: 30px !important;
     line-height: 30px !important;
     font-size: 18px !important;
+    position: relative !important;
   }
   
   /* Ensure the zoom control container is visible */
@@ -277,6 +278,18 @@
     border: none !important;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4) !important;
     background: transparent !important;
+    position: relative !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Ensure the parent container is visible */
+  .leaflet-control-container .leaflet-bottom.leaflet-right,
+  .leaflet-control-container .leaflet-top.leaflet-right {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 }
 
