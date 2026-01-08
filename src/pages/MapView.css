@@ -154,13 +154,13 @@
   color: #2e7d32;
 }
 
-/* Move ALL Leaflet zoom controls to bottom-right on desktop */
+/* Move ALL Leaflet zoom controls to bottom-right on desktop, bottom-left on mobile */
 /* Hide any controls in top-left */
 .leaflet-top.leaflet-left {
   display: none !important; /* Hide top-left controls */
 }
 
-/* Move top-right controls to bottom-right on desktop */
+/* Default: Move top-right controls to bottom-right (desktop) */
 .leaflet-top.leaflet-right {
   top: auto !important;
   bottom: 20px !important;
@@ -191,23 +191,31 @@
   z-index: 1006 !important;
 }
 
-/* On desktop, when menu is open (350px wide), move zoom controls left to avoid overlap */
+/* Desktop layout: zoom controls bottom-right, legend to left of zoom, add pin to left of legend */
 @media (min-width: 769px) {
+  /* Zoom controls stay bottom-right */
+  .leaflet-top.leaflet-right {
+    bottom: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+  }
+  
+  /* When menu is open, move zoom controls left */
   body.menu-open .leaflet-top.leaflet-right {
     right: 370px !important; /* 350px menu + 20px gap */
   }
   
-  /* On desktop, position add pin button to left of zoom controls */
+  /* Add pin button: position to left of legend (legend is at ~80px from right) */
   .pin-mode-toggle {
-    bottom: calc(20px + env(safe-area-inset-bottom));
-    bottom: calc(20px + constant(safe-area-inset-bottom)); /* iOS 11.0-11.2 */
+    bottom: 20px !important;
     left: auto !important;
-    right: 80px !important; /* Position to left of zoom controls (zoom ~60px + gap) */
+    right: 200px !important; /* Left of legend (~80px) + legend width (~100px) + gap */
     padding: 8px 12px;
     font-size: 12px;
   }
 }
 
+/* Mobile layout: zoom controls bottom-left, legend bottom-right, add pin above zoom on left */
 @media (max-width: 768px) {
   /* On mobile, move zoom controls to bottom-left to avoid safe area issues */
   .leaflet-top.leaflet-right {
@@ -399,8 +407,8 @@
 /* Adjust position on mobile - move pin toggle above zoom controls on left side */
 @media (max-width: 768px) {
   .pin-mode-toggle {
-    bottom: calc(75px + env(safe-area-inset-bottom)); /* Above zoom controls (~60px height + gap) */
-    bottom: calc(75px + constant(safe-area-inset-bottom)); /* iOS 11.0-11.2 */
+    bottom: calc(75px + env(safe-area-inset-bottom)) !important; /* Above zoom controls (~60px height + gap) */
+    bottom: calc(75px + constant(safe-area-inset-bottom)) !important; /* iOS 11.0-11.2 */
     left: calc(15px + env(safe-area-inset-left)) !important;
     left: calc(15px + constant(safe-area-inset-left)) !important; /* iOS 11.0-11.2 */
     right: auto !important;
@@ -415,8 +423,8 @@
   /* Make text shorter on very small screens */
   @media (max-width: 480px) {
     .pin-mode-toggle {
-      bottom: calc(70px + env(safe-area-inset-bottom));
-      bottom: calc(70px + constant(safe-area-inset-bottom)); /* iOS 11.0-11.2 */
+      bottom: calc(70px + env(safe-area-inset-bottom)) !important;
+      bottom: calc(70px + constant(safe-area-inset-bottom)) !important; /* iOS 11.0-11.2 */
       padding: 5px 6px;
       font-size: 9px;
       gap: 3px;
