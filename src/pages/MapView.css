@@ -162,30 +162,20 @@
 
 /* CRITICAL: Force zoom controls to bottom-right by default (desktop) - use highest specificity */
 /* Use body/html/#root selectors to ensure this overrides Leaflet's default CSS in production builds */
-/* Default to desktop positioning - mobile will override via media query */
-body .leaflet-bottom.leaflet-right,
-html body .leaflet-bottom.leaflet-right,
+/* Default to desktop positioning - mobile will override via media query ONLY on touch devices */
+/* IMPORTANT: These rules apply by default and should win unless explicitly overridden by mobile media query */
+html body #root .leaflet-bottom.leaflet-right,
+html body #root .leaflet-top.leaflet-right,
 body #root .leaflet-bottom.leaflet-right,
-html body #root .leaflet-bottom.leaflet-right {
-  bottom: 20px !important;
-  right: 20px !important;
-  left: auto !important;
-  top: auto !important;
-  z-index: 1006 !important;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* Also handle .leaflet-top.leaflet-right in case it's used */
-body .leaflet-top.leaflet-right,
-html body .leaflet-top.leaflet-right,
 body #root .leaflet-top.leaflet-right,
-html body #root .leaflet-top.leaflet-right {
-  top: auto !important;
+html body .leaflet-bottom.leaflet-right,
+html body .leaflet-top.leaflet-right,
+body .leaflet-bottom.leaflet-right,
+body .leaflet-top.leaflet-right {
   bottom: 20px !important;
   right: 20px !important;
   left: auto !important;
+  top: auto !important;
   z-index: 1006 !important;
   display: block !important;
   visibility: visible !important;
