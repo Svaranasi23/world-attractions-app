@@ -201,13 +201,12 @@ body .leaflet-top.leaflet-right {
   z-index: 1006 !important;
 }
 
-/* Mobile layout: zoom controls bottom-left, legend bottom-right, add pin above zoom on left */
-/* ONLY apply on actual mobile/touch devices with very small screens */
-/* Use very restrictive conditions to avoid matching desktop browsers */
-@media screen and (max-width: 480px) and (pointer: coarse),
-       screen and (max-width: 360px) {
+/* Mobile layout: zoom controls bottom-left - ONLY for iPhone/small touch devices */
+/* Use very restrictive conditions - only apply on actual mobile devices */
+/* NOTE: Desktop browsers should NOT match this - they use default desktop rules above */
+@media screen and (max-width: 480px) and (pointer: coarse) and (hover: none) {
   /* On mobile, move zoom controls to bottom-left to avoid safe area issues */
-  /* Use lower specificity so desktop rules can override on larger screens */
+  /* Use lower specificity so desktop rules can override */
   .leaflet-bottom.leaflet-right,
   .leaflet-top.leaflet-right {
     top: auto !important;
